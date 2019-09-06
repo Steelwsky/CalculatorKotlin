@@ -48,13 +48,12 @@ class MainActivity : AppCompatActivity() {
         tvMiniHelper.text = tvMain.text
         firstNumber = tvMain.text.toString().toInt()
         tvMain.text = ""
-//        if () {
-//
-//        }
+
+
     }
 
     fun saveNumber () {
-//123
+
     }
 
 
