@@ -76,6 +76,7 @@
 
                 <Button
                     android:id="@+id/buttonAC"
+                    android:onClick="onClear"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
@@ -301,6 +302,7 @@
                     android:layout_marginRight="4dp"
                     android:layout_marginBottom="4dp"
                     android:clickable="true"
+                    android:onClick="onOperator"
                     android:scaleType="fitXY"
                     app:backgroundTint="@color/yellow"
                     app:fabCustomSize="90dp"
@@ -350,7 +352,8 @@
                     android:layout_marginRight="4dp"
                     android:layout_marginBottom="4dp"
                     android:background="@drawable/roundedbutton"
-                    android:text=","
+                    android:onClick="onDecimal"
+                    android:text="."
                     android:textColor="@color/white"
                     android:textSize="36sp" />
 
