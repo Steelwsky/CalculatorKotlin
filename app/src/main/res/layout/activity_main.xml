@@ -45,7 +45,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="20dp"
-                        android:layout_weight="0.1"
+                        android:layout_weight="0"
                         android:background="@color/black"
                         android:paddingLeft="20dp"
                         android:textColor="@color/white"
@@ -58,7 +58,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_weight="0.9"
+                        android:layout_weight="1"
                         android:background="#000000"
                         android:gravity="center_vertical|end"
                         android:text="@string/DefaultZero"
@@ -117,6 +117,7 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabDivide"
+                    android:onClick="onOperator"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
@@ -177,6 +178,7 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabMulti"
+                    android:onClick="onOperator"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
@@ -188,6 +190,7 @@
                     app:srcCompat="@drawable/ic_forbidden_mark"
                     tools:ignore="VectorDrawableCompat"
                     android:focusable="true" />
+
 
             </TableRow>
 
@@ -234,7 +237,8 @@
                     android:textSize="36sp" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/floatingActionButton"
+                    android:id="@+id/fabMinus"
+                    android:onClick="onOperator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -295,19 +299,18 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabPlus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:onClick="onOperator"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
                     android:layout_marginBottom="4dp"
                     android:clickable="true"
-                    android:onClick="onOperator"
                     android:scaleType="fitXY"
                     app:backgroundTint="@color/yellow"
                     app:fabCustomSize="90dp"
                     app:srcCompat="@drawable/ic_add_plus_button"
-                    tools:ignore="VectorDrawableCompat" />
+                    tools:ignore="VectorDrawableCompat"
+                    android:focusable="true" />
 
 
             </TableRow>
@@ -367,6 +370,7 @@
                     android:layout_marginRight="4dp"
                     android:layout_marginBottom="4dp"
                     android:clickable="true"
+                    android:onClick="onEqual"
                     android:scaleType="fitXY"
                     app:backgroundTint="@color/yellow"
                     app:fabCustomSize="90dp"
