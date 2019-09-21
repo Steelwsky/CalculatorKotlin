@@ -8,13 +8,4 @@
         </shape>
     </item>
 
-    <!--    <item android:state_pressed="true">-->
-    <!--        <shape android:shape="rectangle">-->
-    <!--            <size-->
-    <!--                android:width="80dp"-->
-    <!--                android:height="80dp" />-->
-    <!--            <corners android:radius="40dp" />-->
-    <!--            <solid android:color="@color/yellow" />-->
-    <!--        </shape>-->
-    <!--    </item>-->
 </selector>
