@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     var secondNumber: Double = 0.0
 
     var newOpr = ""
+    var isAfterOperator = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,12 +33,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onNumber(view: View) {
+        if (checkForLastOperator()) {
+            tvMain.text = ""
+        }
         val button = view as Button
         if (!isLastOfAllNumeric) {
             tvMain.text = ""
         }
         tvMain.append((button).text)
         isLastOfAllNumeric = true
+    }
+
+
+    private fun checkForLastOperator() = when {
+        newOpr.isNotEmpty() -> {
+            Log.d("stm", "isNotEmpty is done")
+            isAfterOperator = true
+            tryError = false
+            saveNumber()
+            Log.d("stm", "FN: $firstNumber or SN:$secondNumber")
+            tvMain.text = ""
+            true
+        }
+        else -> false
     }
 
     fun onDecimal(view: View) {
@@ -57,10 +75,10 @@ class MainActivity : AppCompatActivity() {
         isLastOfAllNumeric = false
         isLastOperator = false
         opr = ""
+        newOpr = ""
         tryError = true
         Log.d("steelwsky", "***************CLEARED**********************")
     }
-
 
     fun decimalHelper(number: Double) {
 
@@ -76,117 +94,107 @@ class MainActivity : AppCompatActivity() {
 
     //TODO сделать новый onOperator без вызова функции onEqual и без записи в firstNumber и secondNumber
 
-    fun onOperator(view: View) {
-        if (isAfterEqual) {
-            isAfterEqual = false
-            opr = fabHelper(view)
-        }
-        Log.d("steelwsky", "Operator is pressed")
-        if (isLastOfAllNumeric) {
-            isLastOfAllNumeric = false
-            if (isFirstNumber) {
-                tryError = false
-                firstNumber = tvMain.text.toString().toDouble()
-                isFirstNumber = false
-                Log.d("steelwsky", "FirstNumber: $firstNumber")
-            } else {
-                secondNumber = tvMain.text.toString().toDouble()
-                Log.d("steelwsky", "SecondNumber: $secondNumber")
-                onEqual(view)
-            }
-            opr = fabHelper(view)
-        } else return
-    }
-
 
     fun onEqual(view: View) {
         if (!tryError) {
             if (!isFirstNumber) {
                 secondNumber = tvMain.text.toString().toDouble()
             }
-            tvMain.text = math(opr, firstNumber, secondNumber)
-            firstNumber = tvMain.text.toString().toDouble()
-            isFirstNumber = false
+            Log.d(
+                "STM",
+                "BEFORE MATHFUN newOpr: $newOpr  firstNumber: $firstNumber  secondNumber: $secondNumber"
+            )
+            tvMain.text = math(newOpr, firstNumber, secondNumber).toString()
+//            isFirstNumber = false
             isLastOfAllNumeric = false
             isAfterEqual = true
-//            opr = "="
             return
         } else return
     }
 
 
-    fun math(operation: String, first: Double, second: Double): String {
-        var finalNumber = ""
-        Log.d("steelwsky", "mathINIT")
+    fun math(operation: String, first: Double, second: Double): Double {
+        Log.d("steelwsky", "mathINIT, newOpr is: $newOpr")
         if (operation == "+") {
-            finalNumber = (first + second).toString()
-            Log.d("steelwsky", "WeAreInside  $first + $second = $finalNumber")
+            firstNumber = (first + second)
+            Log.d("steelwsky", "WeAreInside  $first + $second = $firstNumber")
         } else if (operation == "-") {
-            finalNumber = (first - second).toString()
-            Log.d("steelwsky", "WeAreInside  $first - $second = $finalNumber")
+            firstNumber = (first - second)
+            Log.d("steelwsky", "WeAreInside  $first - $second = $firstNumber")
         } else if (operation == "*") {
-            finalNumber = (first * second).toString()
-            Log.d("steelwsky", "WeAreInside  $first * $second = $finalNumber")
+            firstNumber = (first * second)
+            Log.d("steelwsky", "WeAreInside  $first * $second = $firstNumber")
         }
-
-        Log.d("steelwsky", "mathEND   $finalNumber")
-        return finalNumber
+        isFirstNumber = false
+        Log.d("steelwsky", "mathEND   $firstNumber")
+        return firstNumber
     }
+
 
     // функция получения и хранения оператора
-//    fun onOperatorNew(view: View) {
-//        when (view) {
-//            fabPlus -> newOpr = "+"
-//            fabMinus -> newOpr = "-"
-//            fabMulti -> newOpr = "*"
-//            fabDivide -> newOpr = "/"
-//        }
-//        Log.d("steelwsky", " HERE IS MY OPERATOR: $newOpr")
-//    }
-//}
-
-
-    fun fabHelper(v: View): String {
-        var operator = ""
-        when (v) {
-            fabPlus -> operator = "+"
-            fabMinus -> operator = "-"
-            fabMulti -> operator = "*"
-            fabDivide -> operator = "/"
+    fun onOperator(view: View) {
+        if (!isFirstNumber) {
+            onEqual(view)
         }
-        Log.d("steelwsky", " HERE IS MY OPERATOR: $operator")
-        return operator
+        when (view) {
+            fabPlus -> newOpr = "+"
+            fabMinus -> newOpr = "-"
+            fabMulti -> newOpr = "*"
+            fabDivide -> newOpr = "/"
+        }
+        Log.d("steelwsky", "HERE IS MY OPERATOR: $newOpr")
     }
+
+    fun saveNumber() {
+        if (isFirstNumber) {
+            firstNumber = tvMain.text.toString().toDouble()
+            isFirstNumber = false
+        } else {
+            secondNumber = tvMain.text.toString().toDouble()
+            isFirstNumber = true
+        }
+    }
+
+
 }
 
 
-//    fun onOperator1(view: View) {
-//        Log.d("steelwsky", " before IF (SecondNumber !=0) opr is $opr")
-//        if (secondNumber != 0.0) {
-//            Log.d("steelwsky", "SecondNumber !=0 :$secondNumber, so opr is $opr")
-//            onEqual(view)
-//            return
-//        } else {
-//            opr = fabHelper(view)
-//            if (isLastOfAllNumeric) {
-//                Log.d("steelwsky", "$opr HERE")
-//                isLastOfAllNumeric = false
-//                if (isFirstNumber) {
-//                    firstNumber = tvMain.text.toString().toDouble()
-//                    Log.d("steelwsky", "TOOK FIRSTNUMBER $firstNumber")
-//                    isFirstNumber = false
-//                } else {
-//                    secondNumber = tvMain.text.toString().toDouble()
-//                    isFirstNumber = true
-//                    Log.d("steelwsky", "TOOK SECONDNUMBER $secondNumber")
-//                }
-//                //проверка на заполненность первого и второго числа// сделано херово, надо бы иначе
-//                if (firstNumber != 0.0 && secondNumber != 0.0) {
-//                    onEqual(view)
-//                }
-//            } else return
+//    fun math(operation: String, first: Double, second: Double): String {
+//        var finalNumber = ""
+//        Log.d("steelwsky", "mathINIT")
+//        if (operation == "+") {
+//            finalNumber = (first + second).toString()
+//            Log.d("steelwsky", "WeAreInside  $first + $second = $finalNumber")
+//        } else if (operation == "-") {
+//            finalNumber = (first - second).toString()
+//            Log.d("steelwsky", "WeAreInside  $first - $second = $finalNumber")
+//        } else if (operation == "*") {
+//            finalNumber = (first * second).toString()
+//            Log.d("steelwsky", "WeAreInside  $first * $second = $finalNumber")
 //        }
+//
+//        Log.d("steelwsky", "mathEND   $finalNumber")
+//        return finalNumber
 //    }
 
-
-
+//    fun onOperator1(view: View) {
+//        if (isAfterEqual) {
+//            isAfterEqual = false
+//            opr = fabHelper(view)
+//        }
+//        Log.d("steelwsky", "Operator is pressed")
+//        if (isLastOfAllNumeric) {
+//            isLastOfAllNumeric = false
+//            if (isFirstNumber) {
+//                tryError = false
+//                firstNumber = tvMain.text.toString().toDouble()
+//                isFirstNumber = false
+//                Log.d("steelwsky", "FirstNumber: $firstNumber")
+//            } else {
+//                secondNumber = tvMain.text.toString().toDouble()
+//                Log.d("steelwsky", "SecondNumber: $secondNumber")
+//                onEqual(view)
+//            }
+//            opr = fabHelper(view)
+//        } else return
+//    }
