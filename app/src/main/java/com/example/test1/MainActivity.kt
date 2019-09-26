@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.activity_main.*
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +25,17 @@ class MainActivity : AppCompatActivity() {
     var newOpr = ""
     var isAfterOperator = false
 
+
+    //TODO запоминать лишь последний нажатый знак, например 8+-7 должно ровняться 1, так как "-" это последний знак. Сейчас ответ будет 15 ---DONE
+    //TODO отрицательные числа считаются неверно - -2+7 = -9. Так только после нажатия на "=", ибо не сохраняется новый знак, а иначе считается верно ---DONE
+    // https://stackoverflow.com/questions/19694279/calculator-allowing-negative-numbers-in-calculation ???
+    //TODO Все нецелые числа, возможность расчета 63/8 с получением нецелого числа
+    //TODO сделать % проценты
+    //TODO сделать +-
+    //TODO сделать формат # ###,...
+    //TODO копирование tvMain в буфер по двойному нажатию
+
+    //TODO сделать новый onOperator без вызова функции onEqual и без записи в firstNumber и secondNumber ---DONE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,19 +93,13 @@ class MainActivity : AppCompatActivity() {
         Log.d("steelwsky", "***************CLEARED**********************")
     }
 
-    fun decimalHelper(number: Double) {
-
+    fun decimalHelper(number: Double): String {
+        val df = DecimalFormat("# ###.##")
+        df.roundingMode = RoundingMode.CEILING
+        val after = df.format(number)
+        Log.d("STM", "decimalHelper: $after")
+        return after
     }
-
-    //TODO запоминать лишь последний нажатый знак, например 8+-7 должно ровняться 1, так как "-" это последний знак. Сейчас ответ будет 15
-    //TODO отрицательные числа считаются неверно - -2+7 = -9. Так только после нажатия на "=", ибо не сохраняется новый знак, а иначе считается верно
-    // https://stackoverflow.com/questions/19694279/calculator-allowing-negative-numbers-in-calculation ???
-    //TODO Все нецелые числа, возможность расчета 63/8 с получением нецелого числа
-    //TODO сделать % проценты
-    //TODO сделать +-
-    //TODO сделать формат # ###,...
-
-    //TODO сделать новый onOperator без вызова функции onEqual и без записи в firstNumber и secondNumber
 
 
     fun onEqual(view: View) {
@@ -107,6 +114,7 @@ class MainActivity : AppCompatActivity() {
             tvMain.text = math(newOpr, firstNumber, secondNumber).toString()
 //            isFirstNumber = false
             isLastOfAllNumeric = false
+            isFirstNumber = true
             isAfterEqual = true
             return
         } else return
@@ -124,7 +132,11 @@ class MainActivity : AppCompatActivity() {
         } else if (operation == "*") {
             firstNumber = (first * second)
             Log.d("steelwsky", "WeAreInside  $first * $second = $firstNumber")
+        } else if (operation == "/") {
+            firstNumber = (first / second)
+            Log.d("steelwsky", "WeAreInside  $first / $second = $firstNumber")
         }
+//        val decimal = BigDecimal(firstNumber).setScale(8)
         isFirstNumber = false
         Log.d("steelwsky", "mathEND   $firstNumber")
         return firstNumber
