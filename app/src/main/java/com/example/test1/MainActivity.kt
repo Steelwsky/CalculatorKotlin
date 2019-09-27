@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     var secondNumber: Double = 0.0
 
     var newOpr = ""
-    var isAfterOperator = false
+    var isNeededToCheck = false
 
 
     //TODO запоминать лишь последний нажатый знак, например 8+-7 должно ровняться 1, так как "-" это последний знак. Сейчас ответ будет 15 ---DONE
@@ -45,12 +45,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    // даблять, не записывается больше 1значного числа после нажатия на оператор: 7+ 89 = 15 -> 7+8 (9)
     fun onNumber(view: View) {
         if (checkForLastOperator()) {
             tvMain.text = ""
         }
         val button = view as Button
         if (!isLastOfAllNumeric) {
+            Log.d("@@@@@@", "isLastNumeric")
             tvMain.text = ""
         }
         tvMain.append((button).text)
@@ -61,11 +63,13 @@ class MainActivity : AppCompatActivity() {
     private fun checkForLastOperator() = when {
         newOpr.isNotEmpty() -> {
             Log.d("stm", "isNotEmpty is done")
-            isAfterOperator = true
+            isNeededToCheck = true
             tryError = false
             saveNumber()
             Log.d("stm", "FN: $firstNumber or SN:$secondNumber")
-            tvMain.text = ""
+//            tvMain.text = ""
+            //Проблема тут, надо как то сохранить старый знак для счета, но при этом не обнулять, когда пытаешься написать больше одного знака для SN
+            newOpr = ""
             true
         }
         else -> false
@@ -93,10 +97,10 @@ class MainActivity : AppCompatActivity() {
         Log.d("steelwsky", "***************CLEARED**********************")
     }
 
-    fun decimalHelper(number: Double): String {
-        val df = DecimalFormat("# ###.##")
+    private fun decimalHelper(number: Double): Double {
+        val df = DecimalFormat("#,###.#####")
         df.roundingMode = RoundingMode.CEILING
-        val after = df.format(number)
+        val after = df.format(number).toDouble()
         Log.d("STM", "decimalHelper: $after")
         return after
     }
@@ -112,6 +116,7 @@ class MainActivity : AppCompatActivity() {
                 "BEFORE MATHFUN newOpr: $newOpr  firstNumber: $firstNumber  secondNumber: $secondNumber"
             )
             tvMain.text = math(newOpr, firstNumber, secondNumber).toString()
+            newOpr = ""
 //            isFirstNumber = false
             isLastOfAllNumeric = false
             isFirstNumber = true
@@ -121,25 +126,31 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun math(operation: String, first: Double, second: Double): Double {
+    private fun math(operation: String, first: Double, second: Double): Double {
         Log.d("steelwsky", "mathINIT, newOpr is: $newOpr")
-        if (operation == "+") {
-            firstNumber = (first + second)
-            Log.d("steelwsky", "WeAreInside  $first + $second = $firstNumber")
-        } else if (operation == "-") {
-            firstNumber = (first - second)
-            Log.d("steelwsky", "WeAreInside  $first - $second = $firstNumber")
-        } else if (operation == "*") {
-            firstNumber = (first * second)
-            Log.d("steelwsky", "WeAreInside  $first * $second = $firstNumber")
-        } else if (operation == "/") {
-            firstNumber = (first / second)
-            Log.d("steelwsky", "WeAreInside  $first / $second = $firstNumber")
+        when (operation) {
+            "+" -> {
+                firstNumber = (first + second)
+                Log.d("steelwsky", "WeAreInside  $first + $second = $firstNumber")
+            }
+            "-" -> {
+                firstNumber = (first - second)
+                Log.d("steelwsky", "WeAreInside  $first - $second = $firstNumber")
+            }
+            "*" -> {
+                firstNumber = (first * second)
+                Log.d("steelwsky", "WeAreInside  $first * $second = $firstNumber")
+            }
+            "/" -> {
+                firstNumber = (first / second)
+                Log.d("steelwsky", "WeAreInside  $first / $second = $firstNumber")
+            }
         }
-//        val decimal = BigDecimal(firstNumber).setScale(8)
         isFirstNumber = false
         Log.d("steelwsky", "mathEND   $firstNumber")
-        return firstNumber
+        val forDecimalHelper = decimalHelper(firstNumber)
+        Log.d("STM", "forDecimalHelper: $forDecimalHelper")
+        return forDecimalHelper
     }
 
 
@@ -157,7 +168,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("steelwsky", "HERE IS MY OPERATOR: $newOpr")
     }
 
-    fun saveNumber() {
+    private fun saveNumber() {
         if (isFirstNumber) {
             firstNumber = tvMain.text.toString().toDouble()
             isFirstNumber = false
