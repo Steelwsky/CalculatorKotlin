@@ -34,16 +34,17 @@
                 android:gravity="top|end">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginRight="11dp"
                     android:layout_weight="1"
+                    android:gravity="top"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tvMiniHelper"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:layout_weight="0"
                         android:background="@color/black"
@@ -56,7 +57,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="20dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:background="#000000"
@@ -203,6 +203,7 @@
 
                 <Button
                     android:id="@+id/buttonFour"
+                    android:onClick="onNumber"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
@@ -216,6 +217,7 @@
 
                 <Button
                     android:id="@+id/buttonFive"
+                    android:onClick="onNumber"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
@@ -227,6 +229,7 @@
 
                 <Button
                     android:id="@+id/buttonSix"
+                    android:onClick="onNumber"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
@@ -264,6 +267,7 @@
 
                 <Button
                     android:id="@+id/buttonOne"
+                    android:onClick="onNumber"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
@@ -277,6 +281,7 @@
 
                 <Button
                     android:id="@+id/buttonTwo"
+                    android:onClick="onNumber"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
@@ -288,6 +293,7 @@
 
                 <Button
                     android:id="@+id/buttonThree"
+                    android:onClick="onNumber"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="4dp"
@@ -334,6 +340,7 @@
 
                 <Button
                     android:id="@+id/buttonZero"
+                    android:onClick="onNumber"
                     android:layout_width="188dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="4dp"
