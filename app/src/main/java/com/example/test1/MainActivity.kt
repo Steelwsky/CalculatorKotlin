@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     var secondNumber: Double = 0.0
 
     var newOpr = ""
-    var isNeededToCheck = false
+    var isNoNumber = false
 
     //firstNumber as a String
     var strForTVMain: String = ""
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     //TODO Все нецелые числа, возможность расчета 63/8 с получением нецелого числа --- DONE
     //TODO сделать новый onOperator без вызова функции onEqual и без записи в firstNumber и secondNumber ---DONE
     //      ******************************************
-    //TODO максимальное количество знаков в числах!
+    //TODO максимальное количество знаков в числах! 22.1E11
     //TODO BigDecimal? Внедрить поддержку больших вычислений, типа 885 312 * 943 042 = и показывать с e11. Не столь обязательная штука.
     //TODO сделать % проценты
     //TODO сделать +-
@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         if (checkForLastOperator()) {
             tvMain.text = ""
         }
+
         isLastOperator = false
         forTvMain(view)
         isLastOfAllNumeric = true
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkForLastOperator() = when {
         isLastOperator -> {
             Log.d("stm", "isNotEmpty is done")
-            isNeededToCheck = true
+//            isNoNumber = true
             tryError = false
             saveNumber()
             Log.d("stm", "FN: $firstNumber or SN:$secondNumber")
@@ -128,9 +129,9 @@ class MainActivity : AppCompatActivity() {
         return formatter.format(number)
     }
 
-// TODO Нет отличия, когда onEqual срабатывает после 5-4+ и 5+4= ... Нужно сделать так, чтобы "=" работал по другому.
+// TODO Нет отличия, когда onEqual срабатывает после 5-4+ и 5+4= ... Нужно сделать так, чтобы "=" работал по другому. --- DONE
 // "=" сбрасывает strTVMain, если после него нажать на число. Если же после "=" нажать на другой знак - strTVMain не сбрасывать.
-// Надо следить, что вызвало onEqual и отталкиваться от этого. Если после onEqual нажали на число - стирать strTMMain, если на оператор - оставлять
+// Надо следить, что вызвало onEqual и отталкиваться от этого. Если после onEqual нажали на число - стирать strTMMain, если на оператор - оставлять ---DONE
 
     fun onEqual(view: View) {
         Log.d("STM", "onEqual INIT")
@@ -138,6 +139,12 @@ class MainActivity : AppCompatActivity() {
             secondNumber = strForTVMain.toDouble()
             Log.d("STM", "onEqual !isFirstNumber")
         }
+        if (strForTVMain.equals("")) {
+            onClear(view)
+            Log.d("STM", "strTVMain = null, onEqual EXIT")
+            return
+        }
+
         if (!tryError) {
             Log.d(
                 "STM",
@@ -148,14 +155,17 @@ class MainActivity : AppCompatActivity() {
             isLastOfAllNumeric = false
             isFirstNumber = true
             isAfterEqual = true
-
             Log.d("STM", "onEqual EXIT")
+            tryError = true
             return
-//        } else return
         } else {
-            secondNumber = 0.0
-            tvMain.text = math(newOpr, firstNumber, secondNumber)
-            Log.d("STM", "onEqual EXIT")
+            tryError = false
+            firstNumber = strForTVMain.toDouble()
+            isFirstNumber = false
+            isLastOperator = false
+            Log.d("STM", "tryError is now FALSE")
+            onEqual(view)
+//            secondNumber = 0.0  - ничего не решает
             return
         }
     }
@@ -210,7 +220,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveNumber() {
+        Log.d(" BEFORE SAVENUMBER", "strMain: $strForTVMain and FN:$firstNumber, SN:$secondNumber")
         if (isFirstNumber) {
+            if (strForTVMain.equals("")) strForTVMain = "0"
             firstNumber = strForTVMain.toDouble()
             Log.d("SAVENUMBER", "FN: $firstNumber")
             strForTVMain = ""
@@ -222,65 +234,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
 }
-
-
-//    private fun decimalHelper(number: Double): String {
-//        val df = DecimalFormat("#,###.#####")
-//        df.roundingMode = RoundingMode.CEILING
-//        val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
-//        formatSymbols.decimalSeparator = '.'
-//        formatSymbols.groupingSeparator = ' '
-//        val formatter = DecimalFormat(df.toString(),formatSymbols)
-//        return formatter.format(number)
-//    }
-
-//    fun math(operation: String, first: Double, second: Double): String {
-//        var finalNumber = ""
-//        Log.d("steelwsky", "mathINIT")
-//        if (operation == "+") {
-//            finalNumber = (first + second).toString()
-//            Log.d("steelwsky", "WeAreInside  $first + $second = $finalNumber")
-//        } else if (operation == "-") {
-//            finalNumber = (first - second).toString()
-//            Log.d("steelwsky", "WeAreInside  $first - $second = $finalNumber")
-//        } else if (operation == "*") {
-//            finalNumber = (first * second).toString()
-//            Log.d("steelwsky", "WeAreInside  $first * $second = $finalNumber")
-//        }
-//
-//        Log.d("steelwsky", "mathEND   $finalNumber")
-//        return finalNumber
-//    }
-
-//    fun onOperator1(view: View) {
-//        if (isAfterEqual) {
-//            isAfterEqual = false
-//            opr = fabHelper(view)
-//        }
-//        Log.d("steelwsky", "Operator is pressed")
-//        if (isLastOfAllNumeric) {
-//            isLastOfAllNumeric = false
-//            if (isFirstNumber) {
-//                tryError = false
-//                firstNumber = tvMain.text.toString().toDouble()
-//                isFirstNumber = false
-//                Log.d("steelwsky", "FirstNumber: $firstNumber")
-//            } else {
-//                secondNumber = tvMain.text.toString().toDouble()
-//                Log.d("steelwsky", "SecondNumber: $secondNumber")
-//                onEqual(view)
-//            }
-//            opr = fabHelper(view)
-//        } else return
-//    }
-//    private fun saveNumber() {
-//        if (isFirstNumber) {
-//            firstNumber = tvMain.text.toString().toDouble()
-//            Log.d("SAVENUMBER", "FN: $firstNumber")
-//            isFirstNumber = false
-//        } else {
-//            secondNumber = tvMain.text.toString().toDouble()
-//            Log.d("SAVENUMBER", "SN: $secondNumber")
-//            isFirstNumber = true
-//        }
