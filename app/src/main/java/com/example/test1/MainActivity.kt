@@ -1,10 +1,17 @@
 package com.example.test1
 
+import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -55,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     //TODO AC -> C
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -62,6 +70,27 @@ class MainActivity : AppCompatActivity() {
         tvMain.text = "0"
 
     }
+
+    fun letMe(view: View) {
+        view.setOnLongClickListener() {
+            saveNumberToBuffer(view)
+            Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
+            true
+        }
+
+    }
+
+
+    @SuppressLint("ServiceCast")
+    fun saveNumberToBuffer(view: View) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip: ClipData = ClipData.newPlainText("number", tvMain.text)
+        clipboard.primaryClip = clip
+
+        Log.d("Clipboard", "we saved str: $strForTVMain")
+
+    }
+
 
     fun onNumber(view: View) {
         if (isAfterEqual) {
@@ -80,12 +109,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun forTvMain(view: View) {
+    private fun forTvMain(view: View) {
         val button = view as Button
         Log.d("HEEEEELP", "$strForTVMain")
         strForTVMain += button.text.toString()
         Log.d("HEEEEELP", "$strForTVMain")
-        var beautyStr = strForTVMain.toDouble()
+        val beautyStr = strForTVMain.toDouble()
         Log.d("STM", "strForTVMain.toDouble: $beautyStr")
         tvMain.text = decimalHelper(beautyStr, DECIMAL_FORMAT)
         Log.d("STM", "strForTVMain: $strForTVMain")
