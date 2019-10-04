@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.activity_main.*
-import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -19,13 +18,13 @@ class MainActivity : AppCompatActivity() {
 
     var isLastOfAllNumeric = false
     var isLastOperator = false
-    var isLastDP = false
+    var isDPhere = false
     var isFirstNumber = true
     var tryError = true
     var isAfterEqual = false
     var firstNumber: Double = 0.0
     var secondNumber: Double = 0.0
-
+    var isPercentage = false
     var newOpr = ""
     var isNoNumber = false
 
@@ -37,18 +36,23 @@ class MainActivity : AppCompatActivity() {
     // Видимо для onNumber нужно отдельно записывать число как string для tvMain и как double для внутренних расчетов ---DONE
     //TODO запоминать лишь последний нажатый знак, например 8+-7 должно ровняться 1, так как "-" это последний знак. Сейчас ответ будет 15 ---DONE
     //TODO отрицательные числа считаются неверно - -2+7 = -9. Так только после нажатия на "=", ибо не сохраняется новый знак, а иначе считается верно ---DONE
-    // https://stackoverflow.com/questions/19694279/calculator-allowing-negative-numbers-in-calculation ???
+    //https://stackoverflow.com/questions/19694279/calculator-allowing-negative-numbers-in-calculation ???
     //TODO Все нецелые числа, возможность расчета 63/8 с получением нецелого числа --- DONE
     //TODO сделать новый onOperator без вызова функции onEqual и без записи в firstNumber и secondNumber ---DONE
-    //      ******************************************
+    //TODO Нет отличия, когда onEqual срабатывает после 5-4+ и 5+4= ... Нужно сделать так, чтобы "=" работал по другому. --- DONE
+    // "=" сбрасывает strTVMain, если после него нажать на число. Если же после "=" нажать на другой знак - strTVMain не сбрасывать.
+    //TODO Надо следить, что вызвало onEqual и отталкиваться от этого. Если после onEqual нажали на число - стирать strTMMain, если на оператор - оставлять ---DONE
+    //TODO сделать "," --- DONE
+    //TODO сделать "%" проценты ---DONE
+    //TODO сделать формат # ### в textView,... при вводе числа в tvMain ---DONE
+    //TODO сделать "+-" ---DONE
+
+    //      ***************************************************************************************
     //TODO максимальное количество знаков в числах! 22.1E11
     //TODO BigDecimal? Внедрить поддержку больших вычислений, типа 885 312 * 943 042 = и показывать с e11. Не столь обязательная штука.
-    //TODO сделать % проценты
-    //TODO сделать +-
-    //TODO сделать формат # ### в textView,... при вводе числа в tvMain
     //TODO копирование tvMain в буфер по двойному нажатию на textView
+    //TODO Сделать двухэтапный сброс. Если есть знак (точнее мы уже записываем второе число), то мы можем сбросить лишь второе число и записать новое. По нажатию на "=" - операция выполнится с новым вторым числом.
     //TODO AC -> C
-    //TODO
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,8 +64,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onNumber(view: View) {
-        if(isAfterEqual) {
-            strForTVMain =""
+        if (isAfterEqual) {
+            strForTVMain = ""
             isAfterEqual = false
         }
         if (!isLastOfAllNumeric) {
@@ -70,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         if (checkForLastOperator()) {
             tvMain.text = ""
         }
-
         isLastOperator = false
         forTvMain(view)
         isLastOfAllNumeric = true
@@ -79,8 +82,12 @@ class MainActivity : AppCompatActivity() {
 
     fun forTvMain(view: View) {
         val button = view as Button
+        Log.d("HEEEEELP", "$strForTVMain")
         strForTVMain += button.text.toString()
-        tvMain.append((button).text)
+        Log.d("HEEEEELP", "$strForTVMain")
+        var beautyStr = strForTVMain.toDouble()
+        Log.d("STM", "strForTVMain.toDouble: $beautyStr")
+        tvMain.text = decimalHelper(beautyStr, DECIMAL_FORMAT)
         Log.d("STM", "strForTVMain: $strForTVMain")
     }
 
@@ -98,17 +105,47 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onDecimal(view: View) {
-        if (isLastOfAllNumeric && !isLastDP) {
+        if (isLastOfAllNumeric && !isDPhere) {
             tvMain.append((view as Button).text)
-            isLastDP = true
-            isLastOfAllNumeric = false
+            strForTVMain += "."
+            Log.d("HEEEEELP", "$strForTVMain")
+            isDPhere = true
         } else return
+    }
+
+    fun onPercentage(view: View) {
+        isPercentage = true
+        if (isFirstNumber) {
+            isFirstNumber = false
+            secondNumber = 0.01
+            newOpr = "*"
+            onEqual(view)
+        } else {
+            if (newOpr.equals("+") || newOpr.equals("-")) {
+                secondNumber = firstNumber * strForTVMain.toDouble() * 0.01
+                Log.d("STM", "onPercentage, else +++ -> SN: $secondNumber")
+            } else {
+                secondNumber = strForTVMain.toDouble() * 0.01
+                Log.d("STM", "onPercentage, else *** -> SN: $secondNumber")
+            }
+            tvMain.text = decimalHelper(secondNumber, DECIMAL_FORMAT)
+        }
+    }
+
+    fun onPlusMinus(view: View) {
+        if (strForTVMain.contains(".")) {
+            strForTVMain = (strForTVMain.toDouble() * -1).toString()
+        } else {
+            strForTVMain = (strForTVMain.toInt() * -1).toString()
+        }
+        Log.d("ONPLUSMINUS", "strForTVMAIN: $strForTVMain")
+        tvMain.text = decimalHelper(strForTVMain.toDouble(), DECIMAL_FORMAT)
     }
 
     fun onClear(view: View) {
         tvMain.text = "0"
         isFirstNumber = true
-        isLastDP = false
+        isDPhere = false
         firstNumber = 0.0
         secondNumber = 0.0
         isLastOfAllNumeric = false
@@ -117,25 +154,22 @@ class MainActivity : AppCompatActivity() {
         tryError = true
         strForTVMain = ""
         isAfterEqual = false
+        isPercentage = false
         Log.d("steelwsky", "***************CLEARED**********************")
     }
 
 
     private fun decimalHelper(number: Double, formatString: String): String {
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
-        formatSymbols.decimalSeparator = '.'
+        formatSymbols.decimalSeparator = ','
         formatSymbols.groupingSeparator = ' '
         val formatter = DecimalFormat(formatString, formatSymbols)
         return formatter.format(number)
     }
 
-// TODO Нет отличия, когда onEqual срабатывает после 5-4+ и 5+4= ... Нужно сделать так, чтобы "=" работал по другому. --- DONE
-// "=" сбрасывает strTVMain, если после него нажать на число. Если же после "=" нажать на другой знак - strTVMain не сбрасывать.
-// Надо следить, что вызвало onEqual и отталкиваться от этого. Если после onEqual нажали на число - стирать strTMMain, если на оператор - оставлять ---DONE
-
     fun onEqual(view: View) {
         Log.d("STM", "onEqual INIT")
-        if (!isFirstNumber) {
+        if (!isFirstNumber && !isPercentage) {
             secondNumber = strForTVMain.toDouble()
             Log.d("STM", "onEqual !isFirstNumber")
         }
@@ -155,6 +189,8 @@ class MainActivity : AppCompatActivity() {
             isLastOfAllNumeric = false
             isFirstNumber = true
             isAfterEqual = true
+            isDPhere = false
+            isPercentage = false
             Log.d("STM", "onEqual EXIT")
             tryError = true
             return
@@ -165,7 +201,6 @@ class MainActivity : AppCompatActivity() {
             isLastOperator = false
             Log.d("STM", "tryError is now FALSE")
             onEqual(view)
-//            secondNumber = 0.0  - ничего не решает
             return
         }
     }
@@ -203,8 +238,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    // функция получения и хранения оператора
     fun onOperator(view: View) {
+        isDPhere = false
         isLastOperator = true
         if (!isFirstNumber) {
             onEqual(view)
