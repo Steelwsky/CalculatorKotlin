@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Test1</string>
+    <string name="app_name">Calculator</string>
     <string name='DefaultZero'>0</string>
 </resources>

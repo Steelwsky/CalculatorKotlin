@@ -53,11 +53,10 @@ class MainActivity : AppCompatActivity() {
     //TODO сделать "%" проценты ---DONE
     //TODO сделать формат # ### в textView,... при вводе числа в tvMain ---DONE
     //TODO сделать "+-" ---DONE
+    //TODO копирование tvMain в буфер по двойному нажатию на textView (сделал по лонгклику, хз, как делать по даблтапу) ---DONE
 
     //      ***************************************************************************************
-    //TODO максимальное количество знаков в числах! 22.1E11
-    //TODO BigDecimal? Внедрить поддержку больших вычислений, типа 885 312 * 943 042 = и показывать с e11. Не столь обязательная штука.
-    //TODO копирование tvMain в буфер по двойному нажатию на textView
+    //TODO максимальное количество знаков в числах! 22.1E11 ... BigDecimal? Внедрить поддержку больших вычислений, типа 885 312 * 943 042 = и показывать с e11. Не столь обязательная штука.
     //TODO Сделать двухэтапный сброс. Если есть знак (точнее мы уже записываем второе число), то мы можем сбросить лишь второе число и записать новое. По нажатию на "=" - операция выполнится с новым вторым числом.
     //TODO AC -> C
 
@@ -77,6 +76,14 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
             true
         }
+
+//        val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+//            override fun onDoubleTap(e: MotionEvent?): Boolean {
+//                Log.d("myApp", "double tap")
+//                return true
+//            }
+//        })
+//        view.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
 
     }
 
@@ -112,12 +119,13 @@ class MainActivity : AppCompatActivity() {
     private fun forTvMain(view: View) {
         val button = view as Button
         Log.d("HEEEEELP", "$strForTVMain")
-        strForTVMain += button.text.toString()
+        if(strForTVMain.length <9) { strForTVMain += button.text.toString()
         Log.d("HEEEEELP", "$strForTVMain")
         val beautyStr = strForTVMain.toDouble()
         Log.d("STM", "strForTVMain.toDouble: $beautyStr")
         tvMain.text = decimalHelper(beautyStr, DECIMAL_FORMAT)
         Log.d("STM", "strForTVMain: $strForTVMain")
+        } else return
     }
 
 
@@ -258,12 +266,16 @@ class MainActivity : AppCompatActivity() {
                     return ERROR
             }
         }
-        isFirstNumber = false
-        strForTVMain = firstNumber.toString()
-        Log.d("steelwsky", "mathEND   $firstNumber")
-        val forDecimalHelper = decimalHelper(firstNumber, DECIMAL_FORMAT)
-        Log.d("STM", "forDecimalHelper: $forDecimalHelper")
-        return forDecimalHelper
+        if (firstNumber > 999999999) {
+            return "Too big"
+        } else {
+            isFirstNumber = false
+            strForTVMain = firstNumber.toString()
+            Log.d("steelwsky", "mathEND   $firstNumber")
+            val forDecimalHelper = decimalHelper(firstNumber, DECIMAL_FORMAT)
+            Log.d("STM", "forDecimalHelper: $forDecimalHelper")
+            return forDecimalHelper
+        }
     }
 
 

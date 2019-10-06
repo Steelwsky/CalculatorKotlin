@@ -2,396 +2,385 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/black"
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:id="@+id/mainLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:id="@+id/mainLLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <TableLayout
-            android:id="@+id/tableLayout"
+        <LinearLayout
+            android:id="@+id/mainLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.8"
-            android:background="#000000"
-            android:gravity="fill">
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:gravity="bottom"
+            android:orientation="vertical">
 
 
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:baselineAligned="false"
-                android:gravity="top|end">
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#000000"
+                android:gravity="bottom">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="11dp"
-                    android:layout_weight="1"
-                    android:gravity="top"
-                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvMiniHelper"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_weight="0"
-                        android:background="@color/black"
-                        android:paddingLeft="20dp"
-                        android:textColor="@color/white"
-                        android:textSize="24sp" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.8"
+                    android:baselineAligned="false"
+                    android:gravity="bottom|center_vertical">
 
-                    <TextView
-                        android:id="@+id/tvMain"
-                        android:onClick="letMe"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
                         android:layout_weight="1"
-                        android:background="#000000"
-                        android:gravity="center_vertical|end"
-                        android:text="@string/DefaultZero"
+                        android:gravity="top"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvMiniHelper"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:layout_weight="0"
+                            android:background="@color/black"
+                            android:paddingLeft="20dp"
+                            android:textColor="@color/white"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/tvMain"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:background="@color/black"
+                            android:gravity="bottom|center|end"
+                            android:onClick="letMe"
+                            android:text="@string/DefaultZero"
+                            android:textColor="@color/white"
+                            android:textSize="60sp" />
+                    </LinearLayout>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.05"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/buttonAC"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton_lightgrey"
+                        android:onClick="onClear"
+                        android:text="AC"
+                        android:textColor="@color/black"
+                        android:textSize="36sp" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabPlusMinus"
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onPlusMinus"
+                        android:scaleType="fitXY"
+                        app:backgroundTint="@color/lightGrey"
+                        app:fabCustomSize="80dp"
+                        app:srcCompat="@drawable/ic_mathematical_basic_signs_of_plus_and_minus_with_a_slash"
+                        tools:ignore="VectorDrawableCompat" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabPercentage"
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        android:onClick="onPercentage"
+                        android:scaleType="fitXY"
+                        app:backgroundTint="@color/lightGrey"
+                        app:fabCustomSize="80dp"
+                        app:srcCompat="@drawable/ic_percentage_discount"
+                        tools:ignore="VectorDrawableCompat" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabDivide"
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        android:onClick="onOperator"
+                        android:scaleType="fitXY"
+                        app:backgroundTint="@color/yellow"
+                        app:fabCustomSize="80dp"
+                        app:srcCompat="@drawable/ic_divide"
+                        tools:ignore="VectorDrawableCompat" />
+
+                </TableRow>
+
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.05"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/buttonSeven"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onNumber"
+                        android:text="7"
                         android:textColor="@color/white"
-                        android:textSize="72sp" />
-                </LinearLayout>
+                        android:textSize="36sp" />
 
-            </TableRow>
+                    <Button
+                        android:id="@+id/buttonEight"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onNumber"
+                        android:text="8"
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
 
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="0.05">
+                    <Button
+                        android:id="@+id/buttonNine"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onNumber"
+                        android:text="9"
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
 
-                <Button
-                    android:id="@+id/buttonAC"
-                    android:onClick="onClear"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton_lightgrey"
-                    android:text="AC"
-                    android:textColor="@color/black"
-                    android:textSize="40sp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="4dp" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabPlusMinus"
-                    android:onClick="onPlusMinus"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:scaleType="fitXY"
-                    app:backgroundTint="@color/lightGrey"
-                    app:fabCustomSize="90dp"
-                    app:srcCompat="@drawable/ic_mathematical_basic_signs_of_plus_and_minus_with_a_slash"
-                    tools:ignore="VectorDrawableCompat"
-                    android:focusable="true" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabPercentage"
-                    android:onClick="onPercentage"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:scaleType="fitXY"
-                    app:backgroundTint="@color/lightGrey"
-                    app:fabCustomSize="90dp"
-                    app:srcCompat="@drawable/ic_percentage_discount"
-                    tools:ignore="VectorDrawableCompat" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabDivide"
-                    android:onClick="onOperator"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:scaleType="fitXY"
-                    app:backgroundTint="@color/yellow"
-                    app:fabCustomSize="90dp"
-                    app:srcCompat="@drawable/ic_divide"
-                    tools:ignore="VectorDrawableCompat" />
-
-            </TableRow>
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabMulti"
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onOperator"
+                        android:scaleType="fitXY"
+                        app:backgroundTint="@color/yellow"
+                        app:fabCustomSize="80dp"
+                        app:srcCompat="@drawable/ic_forbidden_mark"
+                        tools:ignore="VectorDrawableCompat" />
 
 
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="0.05">
-
-                <Button
-                    android:id="@+id/buttonSeven"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:onClick="onNumber"
-                    android:text="7"
-                    android:textColor="@color/white"
-                    android:textSize="36sp" />
-
-                <Button
-                    android:id="@+id/buttonEight"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:onClick="onNumber"
-                    android:text="8"
-                    android:textColor="@color/white"
-                    android:textSize="36sp" />
-
-                <Button
-                    android:id="@+id/buttonNine"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:onClick="onNumber"
-                    android:text="9"
-                    android:textColor="@color/white"
-                    android:textSize="36sp" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabMulti"
-                    android:onClick="onOperator"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:scaleType="fitXY"
-                    app:backgroundTint="@color/yellow"
-                    app:fabCustomSize="90dp"
-                    app:srcCompat="@drawable/ic_forbidden_mark"
-                    tools:ignore="VectorDrawableCompat"
-                    android:focusable="true" />
+                </TableRow>
 
 
-            </TableRow>
-
-
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="0.05">
-
-                <Button
-                    android:id="@+id/buttonFour"
-                    android:onClick="onNumber"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:text="4"
-                    android:textColor="@color/white"
-                    android:textSize="36sp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="4dp" />
-
-                <Button
-                    android:id="@+id/buttonFive"
-                    android:onClick="onNumber"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:text="5"
-                    android:textColor="@color/white"
-                    android:textSize="36sp" />
-
-                <Button
-                    android:id="@+id/buttonSix"
-                    android:onClick="onNumber"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:text="6"
-                    android:textColor="@color/white"
-                    android:textSize="36sp" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabMinus"
-                    android:onClick="onOperator"
+                <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="fitXY"
-                    app:backgroundTint="@color/yellow"
-                    app:fabCustomSize="90dp"
-                    app:srcCompat="@drawable/ic_calculation_operations_minus_sign"
-                    tools:ignore="VectorDrawableCompat" />
+                    android:layout_gravity="center"
+                    android:layout_weight="0.05"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/buttonFour"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onNumber"
+                        android:text="4"
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
+
+                    <Button
+                        android:id="@+id/buttonFive"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onNumber"
+                        android:text="5"
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
+
+                    <Button
+                        android:id="@+id/buttonSix"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onNumber"
+                        android:text="6"
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabMinus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onOperator"
+                        android:scaleType="fitXY"
+                        app:backgroundTint="@color/yellow"
+                        app:fabCustomSize="80dp"
+                        app:srcCompat="@drawable/ic_calculation_operations_minus_sign"
+                        tools:ignore="VectorDrawableCompat" />
 
 
-            </TableRow>
+                </TableRow>
 
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="0.05">
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.05"
+                    android:gravity="center">
 
-                <Button
-                    android:id="@+id/buttonOne"
-                    android:onClick="onNumber"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:text="1"
-                    android:textColor="@color/white"
-                    android:textSize="36sp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="4dp" />
+                    <Button
+                        android:id="@+id/buttonOne"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onNumber"
+                        android:text="1"
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
 
-                <Button
-                    android:id="@+id/buttonTwo"
-                    android:onClick="onNumber"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:text="2"
-                    android:textColor="@color/white"
-                    android:textSize="36sp" />
+                    <Button
+                        android:id="@+id/buttonTwo"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onNumber"
+                        android:text="2"
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
 
-                <Button
-                    android:id="@+id/buttonThree"
-                    android:onClick="onNumber"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:text="3"
-                    android:textColor="@color/white"
-                    android:textSize="36sp" />
+                    <Button
+                        android:id="@+id/buttonThree"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onNumber"
+                        android:text="3"
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabPlus"
-                    android:onClick="onOperator"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:scaleType="fitXY"
-                    app:backgroundTint="@color/yellow"
-                    app:fabCustomSize="90dp"
-                    app:srcCompat="@drawable/ic_add_plus_button"
-                    tools:ignore="VectorDrawableCompat"
-                    android:focusable="true" />
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabPlus"
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onOperator"
+                        android:scaleType="fitXY"
+                        app:backgroundTint="@color/yellow"
+                        app:fabCustomSize="80dp"
+                        app:srcCompat="@drawable/ic_add_plus_button"
+                        tools:ignore="VectorDrawableCompat" />
 
 
-            </TableRow>
+                </TableRow>
 
-        </TableLayout>
+            </TableLayout>
 
 
-        <TableLayout
-            android:id="@+id/tableLayout2"
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.18"
-            android:background="@color/black">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_weight="0.1"
+            android:gravity="bottom"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainLayout">
 
-            <TableRow
-                android:id="@+id/lowerLayout"
+            <TableLayout
+                android:id="@+id/tableLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1">
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/black"
+                android:gravity="bottom">
 
-                <Button
-                    android:id="@+id/buttonZero"
-                    android:onClick="onNumber"
-                    android:layout_width="188dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:text="0"
-                    android:textColor="@color/white"
-                    android:textSize="36sp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="4dp" />
-
-                <Button
-                    android:id="@+id/buttonDecimal"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/roundedbutton"
-                    android:onClick="onDecimal"
-                    android:text=","
-                    android:textColor="@color/white"
-                    android:textSize="36sp" />
-
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabEquals"
+                <TableRow
+                    android:id="@+id/lowerLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:onClick="onEqual"
-                    android:scaleType="fitXY"
-                    app:backgroundTint="@color/yellow"
-                    app:fabCustomSize="90dp"
-                    app:srcCompat="@drawable/ic_equal_symbol"
-                    tools:ignore="VectorDrawableCompat" />
+                    android:layout_gravity="bottom"
+                    android:layout_weight="1"
+                    android:gravity="center|top">
+
+                    <Button
+                        android:id="@+id/buttonZero"
+                        android:layout_width="176dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:gravity="center_horizontal|left|center_vertical"
+                        android:onClick="onNumber"
+                        android:paddingLeft="30dp"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
+
+                    <Button
+                        android:id="@+id/buttonDecimal"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/roundedbutton"
+                        android:onClick="onDecimal"
+                        android:text=","
+                        android:textColor="@color/white"
+                        android:textSize="36sp" />
 
 
-            </TableRow>
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabEquals"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:clickable="true"
+                        android:onClick="onEqual"
+                        android:scaleType="fitXY"
+                        app:backgroundTint="@color/yellow"
+                        app:fabCustomSize="80dp"
+                        app:srcCompat="@drawable/ic_equal_symbol"
+                        tools:ignore="VectorDrawableCompat" />
+                </TableRow>
 
-        </TableLayout>
-
+            </TableLayout>
+        </LinearLayout>
     </LinearLayout>
 
 
