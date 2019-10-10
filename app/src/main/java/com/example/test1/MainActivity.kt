@@ -7,23 +7,27 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.Button
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
+import android.util.TypedValue
 
 
 class MainActivity : AppCompatActivity() {
 
-    val ERROR = "Error"
-    val DECIMAL_FORMAT = "#,###.#####"
+    private val ERROR = "Error"
+    private val DECIMAL_FORMAT = "#,###.#####"
 
     var isLastOfAllNumeric = false
     var isLastOperator = false
-    var isDPhere = false
+    private var isDPhere = false
     var isFirstNumber = true
     var tryError = true
     var isAfterEqual = false
@@ -35,12 +39,11 @@ class MainActivity : AppCompatActivity() {
 
     var isNumberEmpty = true
     var isFullClear = false
-//    var isFirstPlusMinus = false
 
-
-
-    var strForTVMain: String = ""
+    private var strForTVMain: String = ""
     var stSecondNumber: String = ""
+
+    var isAfterDecimal = false
 
     //--- DONE MUSTHAVE  в tvMain отправлять только готовый string... tvMain и FN/SN - разные вещи!
     //--- DONE Видимо для onNumber нужно отдельно записывать число как string для tvMain и как double для внутренних расчетов ---DONE
@@ -62,13 +65,13 @@ class MainActivity : AppCompatActivity() {
     // надо обудмать, как в начальном положении нажать на "+-" и не крашнуться. Так не делают кста. Можно просто return ---DONE
     //---DONE  8 + , -> 8,5 но должно быть 8 + 0,5  --- DONE
     //---DONE 0.5 * 6 = 3 -> "," 5 -> 5 Если получить ответ нажатием на "=" и после нажать на ",", то ответ сотрется после нажатия новой цифры. ---DONE
+    //---DONE анимацию нажатий на цифры.
 
     //      ***************************************************************************************
     //TODO максимальное количество знаков в числах! 22.1E11 ... BigDecimal? Внедрить поддержку больших вычислений, типа 885 312 * 943 042 = и показывать с e11.
     // Не столь обязательная штука. переделывать всё в BigDecimal??? Посмотреть чужие проекты
 
-    //TODO анимацию нажатий на цифры. Для операторов сделать состяние pressed.
-    //TODO Сделать возможным нажатие на +- в начальном состоянии. мб сделать как в onDecimal при начальном положении
+    //TODO Для операторов сделать состяние pressed (это у меня fab`ы, надо гуглить, хотя у них самих вроде норма анимации).
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,13 +90,15 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-//        val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-//            override fun onDoubleTap(e: MotionEvent?): Boolean {
-//                Log.d("myApp", "double tap")
-//                return true
-//            }
-//        })
-//        view.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+        //TODO posmotret kak eto sdelano v drugih proektah
+        val gestureDetector =
+            GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDoubleTap(e: MotionEvent?): Boolean {
+                    Log.d("myApp", "double tap")
+                    return true
+                }
+            })
+        view.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
 
     }
 
@@ -110,7 +115,9 @@ class MainActivity : AppCompatActivity() {
 
 
     fun onNumber(view: View) {
+
         buttonAC.text = "C"
+//        if(!isAfterDecimal) {
         if (isAfterEqual) {
             Log.d("ONNUMBER", "isAfterEqual")
             strForTVMain = ""
@@ -120,6 +127,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("ONNUMBER", "isLastOfAllNumeric")
             tvMain.text = ""
         }
+//        }
         if (checkForLastOperator()) {
             Log.d("ONNUMBER", "checkForLastOperator")
             tvMain.text = ""
@@ -129,6 +137,15 @@ class MainActivity : AppCompatActivity() {
         forTvMain(view)
         isLastOfAllNumeric = true
     }
+
+
+//    private fun hueChange(c: Int, deg: Int): Int {
+//        val hsv = FloatArray(3)       //array to store HSV values
+//        Color.colorToHSV(c, hsv) //get original HSV values of pixel
+//        hsv[0] = hsv[0] + deg                //add the shift to the HUE of HSV array
+//        hsv[0] = hsv[0] % 360                //confines hue to values:[0,360]
+//        return Color.HSVToColor(Color.alpha(c), hsv)
+//    }
 
 
     private fun forTvMain(view: View) {
@@ -149,7 +166,6 @@ class MainActivity : AppCompatActivity() {
     private fun checkForLastOperator() = when {
         isLastOperator -> {
             Log.d("stm", "isNotEmpty is done")
-//            isNumberEmpty = true
             tryError = false
             saveNumber()
             Log.d("stm", "FN: $firstNumber or SN:$secondNumber")
@@ -159,34 +175,29 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    // TODO проверить смысл isLastOfAllNumeric. мб в этой функции првоерку на нее можно убрать...
     fun onDecimal(view: View) {
+//        isAfterDecimal = true
         Log.d(
             "onDecimal",
             "isNumberEmpty :$isNumberEmpty and strFor: $strForTVMain, isLastOfAllNumeric: $isLastOfAllNumeric, isDPhere: $isDPhere"
         )
-//        if (isNumberEmpty && strForTVMain.isEmpty()) {
         if (isNumberEmpty) {
             tvMain.append((view as Button).text)
             strForTVMain = "0."
             isDPhere = true
             isNumberEmpty = false
         }
-//        if(isLastOperator) {
-//            tvMain.text ="0,"
-//            strForTVMain ="0."
-//            isDPhere = true
-//            isNumberEmpty = false
-//        }
         if (checkForLastOperator()) {
             Log.d("onDecimal", "checkForLastOperator, isNumberEmpty: $isNumberEmpty")
             tvMain.text = "0,"
             strForTVMain = "0."
             isLastOperator = false
-            // postavil isFirstNumber = false i teper posle onCleat eta tema ne rabotaet
+            // postavil isFirstNumber = false i teper posle onCleat eta tema ne rabotaet ??? 10.10.19 - hz o chem eto bilo, vrode pofiksil
+            // A net, case takoy: 5*6 = 30 i posle etogo najat na "," i na number (6) i ostanetsya prosto 6.  Тут надо лезть в
             isFirstNumber = false
             return
         }
+        // isLastOfAllNumeric нужен, иначе крашится при ", ="
         if (isLastOfAllNumeric && !isDPhere) {
             tvMain.append((view as Button).text)
             strForTVMain += "."
@@ -228,8 +239,7 @@ class MainActivity : AppCompatActivity() {
         tvMain.text = decimalHelper(strForTVMain.toDouble(), DECIMAL_FORMAT)
     }
 
-    //не работает второй IF, если нажать сразу на АС. Тут неправильный алгоритм. Если посчитать и нажать на "=" и потом на "С", то сотрется лишь SN.
-// Багов не нашел, но это все равно не круто. Баги есть. + если нажать на С после "=", то скинет только до SN. Видимо надо вернуть старую реализацию. ---DONE
+
     fun onClear(view: View) {
         secondNumber = 0.0
         tvMain.text = "0"
@@ -239,10 +249,8 @@ class MainActivity : AppCompatActivity() {
         isNumberEmpty = true
         isPercentage = false
         Log.d("onClear", "isFullClear: $isFullClear")
-//        if (!isFullClear) isFullClear = true
         Log.d("steelwsky", "***********SN IS CLEARED***********")
         if (isFirstNumber || isFullClear) {
-//            isFullClear = false
             buttonAC.text = "AC"
             isFirstNumber = true
             firstNumber = 0.0
@@ -251,7 +259,7 @@ class MainActivity : AppCompatActivity() {
             newOpr = ""
             tryError = true
             isAfterEqual = false
-//            tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60f)
+            tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60f)
             Log.d("steelwsky", "**********************CLEARED**********************")
         }
         isFullClear = true
@@ -292,7 +300,6 @@ class MainActivity : AppCompatActivity() {
             isLastOfAllNumeric = false
             isFirstNumber = true
             isAfterEqual = true
-//            isNumberEmpty = true
             isDPhere = false
             isPercentage = false
             Log.d("STM", "onEqual EXIT")
@@ -334,20 +341,19 @@ class MainActivity : AppCompatActivity() {
                     return ERROR
             }
         }
-        if (firstNumber > 999999999) {
-            return "Too big"
-        } else {
+//        if (firstNumber > 999999999) {
+//            return "Too big"
+//        } else {
             isFirstNumber = false
             strForTVMain = firstNumber.toString()
-//            if (strForTVMain.length > 9) {
-//                tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f) // ne pomogaet 789654321 / 7.3 = vse sdvigaetsya, ebalrot
-////                round(firstNumber.)
-//            }
+        if (strForTVMain.length > 9) {
+            tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
+        }
             Log.d("steelwsky", "mathEND   $firstNumber")
             val forDecimalHelper = decimalHelper(firstNumber, DECIMAL_FORMAT)
             Log.d("STM", "forDecimalHelper: $forDecimalHelper")
             return forDecimalHelper
-        }
+//        }
     }
 
 
@@ -385,29 +391,3 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-
-//fun onClear1(view: View) {
-//        secondNumber = 0.0
-//        tvMain.text = "0"
-//        isDPhere = false
-//        strForTVMain = ""
-//        buttonAC.text = "AC"
-//        isNumberEmpty = true
-//        isFirstPlusMinus = false
-//        isPercentage = false
-//        Log.d("steelwsky", "***********SN IS CLEARED***********")
-//        if (isAfterEqual && isFullClear) {
-//            isFullClear = false
-//            buttonAC.text = "AC"
-//            isFirstNumber = true
-//            firstNumber = 0.0
-//            isLastOfAllNumeric = false
-//            isLastOperator = false
-//            newOpr = ""
-//            tryError = true
-//            isAfterEqual = false
-////            tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60f)
-//            Log.d("steelwsky", "**********************CLEARED**********************")
-//        }
-//        isFullClear = true
-//    }

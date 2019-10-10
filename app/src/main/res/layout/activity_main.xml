@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:fitsSystemWindows="true">
+
 
     <LinearLayout
         android:id="@+id/mainLLayout"
@@ -18,27 +20,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/mainLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.9"
-            android:gravity="bottom"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
             android:orientation="vertical">
 
-
             <TableLayout
-                android:id="@+id/tableLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:background="#000000"
-                android:gravity="bottom">
-
+                android:layout_height="match_parent">
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="match_parent"
                     android:layout_weight="0.8"
                     android:baselineAligned="false"
                     android:gravity="bottom|center_vertical">
@@ -52,25 +45,13 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tvMiniHelper"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:layout_weight="0"
-                            android:background="@color/black"
-                            android:paddingLeft="20dp"
-                            android:textColor="@color/white"
-                            android:textSize="24sp" />
-
-                        <TextView
                             android:id="@+id/tvMain"
-                            android:layout_width="fill_parent"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="8dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginRight="8dp"
                             android:layout_weight="1"
-                            android:background="@color/black"
                             android:gravity="bottom|center|end"
                             android:onClick="letMe"
                             android:text="@string/DefaultZero"
@@ -79,6 +60,25 @@
                     </LinearLayout>
 
                 </TableRow>
+            </TableLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mainLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:gravity="bottom">
+
 
                 <TableRow
                     android:layout_width="wrap_content"
@@ -186,8 +186,6 @@
                         app:fabCustomSize="80dp"
                         app:srcCompat="@drawable/ic_forbidden_mark"
                         tools:ignore="VectorDrawableCompat" />
-
-
                 </TableRow>
 
 
@@ -302,19 +300,15 @@
 
 
                 </TableRow>
-
             </TableLayout>
 
-
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:layout_weight="0.1"
             android:gravity="bottom"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -325,7 +319,7 @@
             <TableLayout
                 android:id="@+id/tableLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
