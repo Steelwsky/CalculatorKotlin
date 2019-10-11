@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     var isLastOfAllNumeric = false
     var isLastOperator = false
-    private var isDPhere = false
+    var isDPhere = false
     var isFirstNumber = true
     var tryError = true
     var isAfterEqual = false
@@ -35,43 +35,10 @@ class MainActivity : AppCompatActivity() {
     var secondNumber: Double = 0.0
     var isPercentage = false
     var newOpr = ""
-
-
     var isNumberEmpty = true
     var isFullClear = false
-
-    private var strForTVMain: String = ""
+    var strForTVMain: String = ""
     var stSecondNumber: String = ""
-
-    var isAfterDecimal = false
-
-    //--- DONE MUSTHAVE  в tvMain отправлять только готовый string... tvMain и FN/SN - разные вещи!
-    //--- DONE Видимо для onNumber нужно отдельно записывать число как string для tvMain и как double для внутренних расчетов ---DONE
-    //--- DONE запоминать лишь последний нажатый знак, например 8+-7 должно ровняться 1, так как "-" это последний знак. Сейчас ответ будет 15 ---DONE
-    //--- DONE отрицательные числа считаются неверно - -2+7 = -9. Так только после нажатия на "=", ибо не сохраняется новый знак, а иначе считается верно ---DONE
-    //--- DONE https://stackoverflow.com/questions/19694279/calculator-allowing-negative-numbers-in-calculation ???
-    //--- DONE Все нецелые числа, возможность расчета 63/8 с получением нецелого числа --- DONE
-    //--- DONE сделать новый onOperator без вызова функции onEqual и без записи в firstNumber и secondNumber ---DONE
-    //--- DONE Нет отличия, когда onEqual срабатывает после 5-4+ и 5+4= ... Нужно сделать так, чтобы "=" работал по другому. --- DONE
-    //--- DONE "=" сбрасывает strTVMain, если после него нажать на число. Если же после "=" нажать на другой знак - strTVMain не сбрасывать.
-    //--- DONE Надо следить, что вызвало onEqual и отталкиваться от этого. Если после onEqual нажали на число - стирать strTMMain, если на оператор - оставлять ---DONE
-    //--- DONE сделать "," --- DONE
-    //--- DONE сделать "%" проценты ---DONE
-    //--- DONE сделать формат # ### в textView,... при вводе числа в tvMain ---DONE
-    //--- DONE сделать "+-" ---DONE
-    //--- DONE копирование tvMain в буфер по двойному нажатию на textView (сделал по лонгклику, хз, как делать по даблтапу) ---DONE
-    //--- DONE AC -> C  ---DONE
-    //--- DONE Сделать двухэтапный сброс. Если есть знак (точнее мы уже записываем второе число), то мы можем сбросить лишь второе число и записать новое. По нажатию на "=" - операция выполнится с новым вторым числом.  ---DONE
-    // надо обудмать, как в начальном положении нажать на "+-" и не крашнуться. Так не делают кста. Можно просто return ---DONE
-    //---DONE  8 + , -> 8,5 но должно быть 8 + 0,5  --- DONE
-    //---DONE 0.5 * 6 = 3 -> "," 5 -> 5 Если получить ответ нажатием на "=" и после нажать на ",", то ответ сотрется после нажатия новой цифры. ---DONE
-    //---DONE анимацию нажатий на цифры.
-
-    //      ***************************************************************************************
-    //TODO максимальное количество знаков в числах! 22.1E11 ... BigDecimal? Внедрить поддержку больших вычислений, типа 885 312 * 943 042 = и показывать с e11.
-    // Не столь обязательная штука. переделывать всё в BigDecimal??? Посмотреть чужие проекты
-
-    //TODO Для операторов сделать состяние pressed (это у меня fab`ы, надо гуглить, хотя у них самих вроде норма анимации).
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,21 +70,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    @SuppressLint("ServiceCast")
-    fun saveNumberToBuffer(view: View) {
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip: ClipData = ClipData.newPlainText("number", tvMain.text)
-        clipboard.primaryClip = clip
-
-        Log.d("Clipboard", "we saved str: $strForTVMain")
-
-    }
-
-
     fun onNumber(view: View) {
-
         buttonAC.text = "C"
-//        if(!isAfterDecimal) {
         if (isAfterEqual) {
             Log.d("ONNUMBER", "isAfterEqual")
             strForTVMain = ""
@@ -155,11 +109,26 @@ class MainActivity : AppCompatActivity() {
         if (strForTVMain.length < 9) {
             strForTVMain += button.text.toString()
             Log.d("HEEEEELP", "$strForTVMain")
+            if (strForTVMain.contains(".0")) {
+                val helper = strForTVMain.replace(".", ",")
+                Log.d("FORTVMAIN", "helper:$helper")
+                tvMain.text = helper
+                return
+            }
             val beautyStr = strForTVMain.toDouble()
             Log.d("STM", "strForTVMain.toDouble: $beautyStr")
             tvMain.text = decimalHelper(beautyStr, DECIMAL_FORMAT)
             Log.d("STM", "strForTVMain: $strForTVMain")
         } else return
+    }
+
+
+    private fun decimalHelper(number: Double, formatString: String): String {
+        val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
+        formatSymbols.decimalSeparator = ','
+        formatSymbols.groupingSeparator = ' '
+        val formatter = DecimalFormat(formatString, formatSymbols)
+        return formatter.format(number)
     }
 
 
@@ -176,24 +145,27 @@ class MainActivity : AppCompatActivity() {
 
 
     fun onDecimal(view: View) {
-//        isAfterDecimal = true
         Log.d(
             "onDecimal",
             "isNumberEmpty :$isNumberEmpty and strFor: $strForTVMain, isLastOfAllNumeric: $isLastOfAllNumeric, isDPhere: $isDPhere"
         )
+        if (isAfterEqual) {
+            onClear(view)
+        }
         if (isNumberEmpty) {
             tvMain.append((view as Button).text)
             strForTVMain = "0."
             isDPhere = true
             isNumberEmpty = false
         }
+        // pri 0 + 0,75 = 0,75 = 75
         if (checkForLastOperator()) {
             Log.d("onDecimal", "checkForLastOperator, isNumberEmpty: $isNumberEmpty")
             tvMain.text = "0,"
             strForTVMain = "0."
             isLastOperator = false
             // postavil isFirstNumber = false i teper posle onCleat eta tema ne rabotaet ??? 10.10.19 - hz o chem eto bilo, vrode pofiksil
-            // A net, case takoy: 5*6 = 30 i posle etogo najat na "," i na number (6) i ostanetsya prosto 6.  Тут надо лезть в
+
             isFirstNumber = false
             return
         }
@@ -266,14 +238,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun decimalHelper(number: Double, formatString: String): String {
-        val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
-        formatSymbols.decimalSeparator = ','
-        formatSymbols.groupingSeparator = ' '
-        val formatter = DecimalFormat(formatString, formatSymbols)
-        return formatter.format(number)
-    }
-
     fun onEqual(view: View) {
         Log.d("STM", "onEqual INIT")
         if (isFullClear && isNumberEmpty) {
@@ -341,19 +305,12 @@ class MainActivity : AppCompatActivity() {
                     return ERROR
             }
         }
-//        if (firstNumber > 999999999) {
-//            return "Too big"
-//        } else {
-            isFirstNumber = false
-            strForTVMain = firstNumber.toString()
-        if (strForTVMain.length > 9) {
-            tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
-        }
-            Log.d("steelwsky", "mathEND   $firstNumber")
-            val forDecimalHelper = decimalHelper(firstNumber, DECIMAL_FORMAT)
-            Log.d("STM", "forDecimalHelper: $forDecimalHelper")
-            return forDecimalHelper
-//        }
+        isFirstNumber = false
+        strForTVMain = firstNumber.toString()
+        Log.d("steelwsky", "mathEND   $firstNumber")
+        val forDecimalHelper = decimalHelper(firstNumber, DECIMAL_FORMAT)
+        Log.d("STM", "forDecimalHelper:$forDecimalHelper, ${forDecimalHelper.length}")
+        return forDecimalHelper
     }
 
 
@@ -388,6 +345,55 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ServiceCast")
+    fun saveNumberToBuffer(view: View) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip: ClipData = ClipData.newPlainText("number", tvMain.text)
+        clipboard.primaryClip = clip
+
+        Log.d("Clipboard", "we saved str: $strForTVMain")
+
+    }
 
 }
+
+//        if(strForTVMain.contains(".")) {
+//            val afterDot: String = strForTVMain.substringAfter(".")
+//            if (afterDot.length > 5) {
+//                tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60f)
+//            }
+//        } else {
+//            if (strForTVMain.length > 9) {
+//                tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
+//            }
+//        }
+
+//      ***************************************************************************************
+//--- DONE MUSTHAVE  в tvMain отправлять только готовый string... tvMain и FN/SN - разные вещи!
+//--- DONE Видимо для onNumber нужно отдельно записывать число как string для tvMain и как double для внутренних расчетов ---DONE
+//--- DONE запоминать лишь последний нажатый знак, например 8+-7 должно ровняться 1, так как "-" это последний знак. Сейчас ответ будет 15 ---DONE
+//--- DONE отрицательные числа считаются неверно - -2+7 = -9. Так только после нажатия на "=", ибо не сохраняется новый знак, а иначе считается верно ---DONE
+//--- DONE https://stackoverflow.com/questions/19694279/calculator-allowing-negative-numbers-in-calculation ???
+//--- DONE Все нецелые числа, возможность расчета 63/8 с получением нецелого числа --- DONE
+//--- DONE сделать новый onOperator без вызова функции onEqual и без записи в firstNumber и secondNumber ---DONE
+//--- DONE Нет отличия, когда onEqual срабатывает после 5-4+ и 5+4= ... Нужно сделать так, чтобы "=" работал по другому. --- DONE
+//--- DONE "=" сбрасывает strTVMain, если после него нажать на число. Если же после "=" нажать на другой знак - strTVMain не сбрасывать.
+//--- DONE Надо следить, что вызвало onEqual и отталкиваться от этого. Если после onEqual нажали на число - стирать strTMMain, если на оператор - оставлять ---DONE
+//--- DONE сделать "," --- DONE
+//--- DONE сделать "%" проценты ---DONE
+//--- DONE сделать формат # ### в textView,... при вводе числа в tvMain ---DONE
+//--- DONE сделать "+-" ---DONE
+//--- DONE копирование tvMain в буфер по двойному нажатию на textView (сделал по лонгклику, хз, как делать по даблтапу) ---DONE
+//--- DONE AC -> C  ---DONE
+//--- DONE Сделать двухэтапный сброс. Если есть знак (точнее мы уже записываем второе число), то мы можем сбросить лишь второе число и записать новое. По нажатию на "=" - операция выполнится с новым вторым числом.  ---DONE
+// надо обудмать, как в начальном положении нажать на "+-" и не крашнуться. Так не делают кста. Можно просто return ---DONE
+//---DONE  8 + , -> 8,5 но должно быть 8 + 0,5  --- DONE
+//---DONE 0.5 * 6 = 3 -> "," 5 -> 5 Если получить ответ нажатием на "=" и после нажать на ",", то ответ сотрется после нажатия новой цифры. ---DONE
+//---DONE анимацию нажатий на цифры.
+//---NOT DONE максимальное количество знаков в числах! 22.1E11 ... BigDecimal? Внедрить поддержку больших вычислений, типа 885 312 * 943 042 = и показывать с e11. SDELAL INACHE, prosto umenshil text ---NOT DONE
+//---NOT DONE Для операторов сделать состяние pressed (это у меня fab`ы, надо гуглить, хотя у них самих вроде норма анимации). ---NOT DONE
+//---DONE A net, case takoy: 5*6 = 30 i posle etogo najat na "," i na number (6) i ostanetsya prosto 6, hotya doljno bit 30,6.
+// Тут надо лезть думать насчет isAfterEqual sho? NET, tak nigde ne sdelano, OTMENA. Navernoe sdelat  obichnuyu proverku isAfterEqual. Vozmozhno eto bilo sdelano, no ya polomal ---DONE
+//---NOT DONE тут можно все же сделать при начальном положении поставить "-" в tvmain и вписать его в str, но в целом можно и не делать
+//---DONE не пишется число 0,0003. Точнее пишется, но нули не отображаются до тех пор, пока не нажмешь на цифру отличную от 0. forTVMAin  и decimalHelper. разбирться надо в них ---DONE
 

@@ -40,23 +40,34 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:gravity="top"
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
                             android:id="@+id/tvMain"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="80dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginRight="8dp"
-                            android:layout_weight="1"
+                            android:autoSizeMaxTextSize="60sp"
+                            android:autoSizeMinTextSize="30sp"
+                            android:autoSizeStepGranularity="4sp"
+                            android:autoSizeTextType="uniform"
                             android:gravity="bottom|center|end"
                             android:onClick="letMe"
                             android:text="@string/DefaultZero"
                             android:textColor="@color/white"
-                            android:textSize="60sp" />
+
+                            />
                     </LinearLayout>
 
                 </TableRow>
