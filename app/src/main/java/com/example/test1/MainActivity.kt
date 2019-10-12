@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AlphaAnimation
 import android.widget.Button
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,23 +21,23 @@ import android.util.TypedValue
 
 class MainActivity : AppCompatActivity() {
 
-    private val ERROR = "Error"
-    private val DECIMAL_FORMAT = "#,###.#####"
+    private val MATHERROR = "Error"
+    private val DECIMALFORMAT = "#,###.#####"
 
-    var isLastOfAllNumeric = false
-    var isLastOperator = false
-    var isDPhere = false
-    var isFirstNumber = true
-    var tryError = true
-    var isAfterEqual = false
-    var firstNumber: Double = 0.0
-    var secondNumber: Double = 0.0
-    var isPercentage = false
-    var newOpr = ""
-    var isNumberEmpty = true
-    var isFullClear = false
-    var strForTVMain: String = ""
-    var stSecondNumber: String = ""
+    private var isLastOfAllNumeric = false
+    private var isLastOperator = false
+    private var isDPhere = false
+    private var isFirstNumber = true
+    private var tryError = true
+    private var isAfterEqual = false
+    private var firstNumber: Double = 0.0
+    private var secondNumber: Double = 0.0
+    private var isPercentage = false
+    private var newOpr = ""
+    private var isNumberEmpty = true
+    private var isFullClear = false
+    private var strForTVMain: String = ""
+    private var stSecondNumber: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun letMe(view: View) {
-        view.setOnLongClickListener() {
+        view.setOnLongClickListener {
             saveNumberToBuffer(view)
             Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
             true
@@ -105,10 +104,10 @@ class MainActivity : AppCompatActivity() {
     private fun forTvMain(view: View) {
         isNumberEmpty = false
         val button = view as Button
-        Log.d("HEEEEELP", "$strForTVMain")
+        Log.d("HEEEEELP", "strForTVMain: $strForTVMain")
         if (strForTVMain.length < 9) {
             strForTVMain += button.text.toString()
-            Log.d("HEEEEELP", "$strForTVMain")
+            Log.d("HEEEEELP", "strForTVMain: $strForTVMain")
             if (strForTVMain.contains(".0")) {
                 val helper = strForTVMain.replace(".", ",")
                 Log.d("FORTVMAIN", "helper:$helper")
@@ -117,7 +116,7 @@ class MainActivity : AppCompatActivity() {
             }
             val beautyStr = strForTVMain.toDouble()
             Log.d("STM", "strForTVMain.toDouble: $beautyStr")
-            tvMain.text = decimalHelper(beautyStr, DECIMAL_FORMAT)
+            tvMain.text = decimalHelper(beautyStr, DECIMALFORMAT)
             Log.d("STM", "strForTVMain: $strForTVMain")
         } else return
     }
@@ -173,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         if (isLastOfAllNumeric && !isDPhere) {
             tvMain.append((view as Button).text)
             strForTVMain += "."
-            Log.d("HEEEEELP", "$strForTVMain")
+            Log.d("HEEEEELP", "strForTVMain: $strForTVMain")
             isDPhere = true
         } else return
     }
@@ -193,7 +192,7 @@ class MainActivity : AppCompatActivity() {
                 secondNumber = strForTVMain.toDouble() * 0.01
                 Log.d("STM", "onPercentage, else *** -> SN: $secondNumber")
             }
-            tvMain.text = decimalHelper(secondNumber, DECIMAL_FORMAT)
+            tvMain.text = decimalHelper(secondNumber, DECIMALFORMAT)
         }
     }
 
@@ -202,13 +201,13 @@ class MainActivity : AppCompatActivity() {
         if (strForTVMain.isEmpty()) {
             return
         }
-        if (strForTVMain.contains(".")) {
-            strForTVMain = (strForTVMain.toDouble() * -1).toString()
+        strForTVMain = if (strForTVMain.contains(".")) {
+            (strForTVMain.toDouble() * -1).toString()
         } else {
-            strForTVMain = (strForTVMain.toInt() * -1).toString()
+            (strForTVMain.toInt() * -1).toString()
         }
         Log.d("ONPLUSMINUS", "strForTVMAIN: $strForTVMain")
-        tvMain.text = decimalHelper(strForTVMain.toDouble(), DECIMAL_FORMAT)
+        tvMain.text = decimalHelper(strForTVMain.toDouble(), DECIMALFORMAT)
     }
 
 
@@ -217,13 +216,12 @@ class MainActivity : AppCompatActivity() {
         tvMain.text = "0"
         isDPhere = false
         strForTVMain = ""
-        buttonAC.text = "AC"
+        buttonAC.text = getString(R.string.ac)
         isNumberEmpty = true
         isPercentage = false
         Log.d("onClear", "isFullClear: $isFullClear")
         Log.d("steelwsky", "***********SN IS CLEARED***********")
         if (isFirstNumber || isFullClear) {
-            buttonAC.text = "AC"
             isFirstNumber = true
             firstNumber = 0.0
             isLastOfAllNumeric = false
@@ -302,13 +300,13 @@ class MainActivity : AppCompatActivity() {
                     firstNumber = (first / second)
                     Log.d("steelwsky", "WeAreInside  $first / $second = $firstNumber")
                 } else
-                    return ERROR
+                    return MATHERROR
             }
         }
         isFirstNumber = false
         strForTVMain = firstNumber.toString()
         Log.d("steelwsky", "mathEND   $firstNumber")
-        val forDecimalHelper = decimalHelper(firstNumber, DECIMAL_FORMAT)
+        val forDecimalHelper = decimalHelper(firstNumber, DECIMALFORMAT)
         Log.d("STM", "forDecimalHelper:$forDecimalHelper, ${forDecimalHelper.length}")
         return forDecimalHelper
     }
