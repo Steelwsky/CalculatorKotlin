@@ -21,6 +21,7 @@ import android.util.TypedValue
 
 class MainActivity : AppCompatActivity() {
 
+    // можно сделать immutable и вообще тут нет конструктора
     private val MATHERROR = "Error"
     private val DECIMALFORMAT = "#,###.#####"
 
@@ -37,15 +38,24 @@ class MainActivity : AppCompatActivity() {
     private var isNumberEmpty = true
     private var isFullClear = false
     private var strForTVMain: String = ""
-    private var stSecondNumber: String = ""
+    // Ne ponyatno zachem nujen stSecondNumber
+//    private var stSecondNumber: String = ""
 
+    //dopisat
+//    class CalculatorInit constructor(isLastOfAllNumeric: Boolean, isLastOperator: Boolean, isDPhere: Boolean, isFirstNumber: Boolean,
+//                          tryError: Boolean, isAfterEqual: Boolean, firstNumber: Double, secondNumber: Double, isPercentage: Boolean,
+//                          newOpr: String, isNumberEmpty: Boolean, isFullClear: Boolean, strForTVMain: String, stSecondNumber: String) {
+//
+//        init {
+//
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         tvMain.text = "0"
-
     }
 
     fun letMe(view: View) {
@@ -55,19 +65,16 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-
         //TODO posmotret kak eto sdelano v drugih proektah
-        val gestureDetector =
-            GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-                override fun onDoubleTap(e: MotionEvent?): Boolean {
-                    Log.d("myApp", "double tap")
-                    return true
-                }
-            })
-        view.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
-
+//        val gestureDetector =
+//            GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+//                override fun onDoubleTap(e: MotionEvent?): Boolean {
+//                    Log.d("myApp", "double tap")
+//                    return true
+//                }
+//            })
+//        view.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
     }
-
 
     fun onNumber(view: View) {
         buttonAC.text = "C"
@@ -91,7 +98,6 @@ class MainActivity : AppCompatActivity() {
         isLastOfAllNumeric = true
     }
 
-
 //    private fun hueChange(c: Int, deg: Int): Int {
 //        val hsv = FloatArray(3)       //array to store HSV values
 //        Color.colorToHSV(c, hsv) //get original HSV values of pixel
@@ -108,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         if (strForTVMain.length < 9) {
             strForTVMain += button.text.toString()
             Log.d("HEEEEELP", "strForTVMain: $strForTVMain")
-            if (strForTVMain.contains(".0")) {
+            if (strForTVMain.contains(".")) {
                 val helper = strForTVMain.replace(".", ",")
                 Log.d("FORTVMAIN", "helper:$helper")
                 tvMain.text = helper
@@ -130,7 +136,6 @@ class MainActivity : AppCompatActivity() {
         return formatter.format(number)
     }
 
-
     private fun checkForLastOperator() = when {
         isLastOperator -> {
             Log.d("stm", "isNotEmpty is done")
@@ -141,7 +146,6 @@ class MainActivity : AppCompatActivity() {
         }
         else -> false
     }
-
 
     fun onDecimal(view: View) {
         Log.d(
@@ -164,7 +168,6 @@ class MainActivity : AppCompatActivity() {
             strForTVMain = "0."
             isLastOperator = false
             // postavil isFirstNumber = false i teper posle onCleat eta tema ne rabotaet ??? 10.10.19 - hz o chem eto bilo, vrode pofiksil
-
             isFirstNumber = false
             return
         }
@@ -279,7 +282,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun math(operation: String, first: Double, second: Double): String {
         Log.d("steelwsky", "mathINIT, newOpr is: $newOpr")
         when (operation) {
@@ -311,7 +313,6 @@ class MainActivity : AppCompatActivity() {
         return forDecimalHelper
     }
 
-
     fun onOperator(view: View) {
         isDPhere = false
         isLastOperator = true
@@ -336,12 +337,14 @@ class MainActivity : AppCompatActivity() {
             Log.d("SAVENUMBER", "FN: $firstNumber")
             strForTVMain = ""
             isFirstNumber = false
-        } else {
-            secondNumber = stSecondNumber.toDouble()
-            Log.d("SAVENUMBER", "SN: $secondNumber")
-            isFirstNumber = true
         }
     }
+//        ne vipolnimaya chast. vozmozhno est case kogda eto rabotaet (ili rabotalo), no seichas vse chisla sohranyautsa kak firstNumber
+//        else {
+//            secondNumber = stSecondNumber.toDouble()
+//            Log.d("SAVENUMBER", "SN: $secondNumber")
+//            isFirstNumber = true
+//        }
 
     @SuppressLint("ServiceCast")
     fun saveNumberToBuffer(view: View) {
