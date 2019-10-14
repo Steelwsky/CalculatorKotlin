@@ -43,8 +43,8 @@
                 android:autoSizeStepGranularity="4sp"
                 android:autoSizeTextType="uniform"
                 android:gravity="bottom|center|end"
-                android:onClick="letMe"
                 android:text="@string/DefaultZero"
+                android:clickable="true"
                 android:textColor="@color/white"
 
                 />

@@ -43,53 +43,41 @@ class MainActivity : AppCompatActivity() {
 
 
     // Ne ponyatno zachem nujen stSecondNumber
-//    private var stSecondNumber: String = ""
+    // private var stSecondNumber: String = ""
 
     //dopisat
-//    class CalculatorInit constructor(isLastOfAllNumeric: Boolean, isLastOperator: Boolean, isDPhere: Boolean, isFirstNumber: Boolean,
-//                          tryError: Boolean, isAfterEqual: Boolean, firstNumber: Double, secondNumber: Double, isPercentage: Boolean,
-//                          newOpr: String, isNumberEmpty: Boolean, isFullClear: Boolean, strForTVMain: String, stSecondNumber: String) {
-//
-//        init {
-//
-//        }
-//    }
+    class CalculatorInit constructor(isLastOfAllNumeric: Boolean, isLastOperator: Boolean, isDPhere: Boolean, isFirstNumber: Boolean,
+                          tryError: Boolean, isAfterEqual: Boolean, firstNumber: Double, secondNumber: Double, isPercentage: Boolean,
+                          newOpr: String, isNumberEmpty: Boolean, isFullClear: Boolean, strForTVMain: String, stSecondNumber: String) {
+
+        init {
+
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        mDetector = GestureDetectorCompat(this, MyGestureDetector())
-
-        var touchListener = View.OnTouchListener { _, event ->
-            mDetector.onTouchEvent(event)
-        }
-        tvMain.setOnTouchListener(touchListener)
         tvMain.text = "0"
 
-    }
-
-    fun letMe(view: View) {
-        view.setOnTouchListener()
-        view.setOnLongClickListener {
+        val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent?): Boolean {
+                saveNumberToBuffer()
+                Toast.makeText(this@MainActivity, "Copied", Toast.LENGTH_SHORT).show()
+                Log.d("tvMain touch", "double tap applied")
+                return true
+            }
+        })
+        tvMain.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+        tvMain.setOnLongClickListener {
             saveNumberToBuffer()
-            Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, "Copied", Toast.LENGTH_SHORT).show()
+            Log.d("tvMain touch", "long click applied")
             true
         }
+
     }
 
-    //TODO posmotret kak eto sdelano v drugih proektah
-//        val gestureDetector =
-//            GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-//                override fun onDoubleTap(e: MotionEvent?): Boolean {
-//                    saveNumberToBuffer(view)
-//                    Toast.makeText(this@MainActivity, "Copied", Toast.LENGTH_SHORT).show()
-//                    Log.d("myApp", "double tap")
-//                    return true
-//                }
-//            })
-//        view.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
-//    }
 
     fun onNumber(view: View) {
         buttonAC.text = "C"
@@ -346,12 +334,7 @@ class MainActivity : AppCompatActivity() {
             isFirstNumber = false
         }
     }
-//        ne vipolnimaya chast. vozmozhno est case kogda eto rabotaet (ili rabotalo), no seichas vse chisla sohranyautsa kak firstNumber
-//        else {
-//            secondNumber = stSecondNumber.toDouble()
-//            Log.d("SAVENUMBER", "SN: $secondNumber")
-//            isFirstNumber = true
-//        }
+
 
     @SuppressLint("ServiceCast")
     open fun saveNumberToBuffer() {
@@ -363,62 +346,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    class MyGestureDetector : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
-            return super.onSingleTapUp(e)
-        }
-
-        override fun onDown(e: MotionEvent?): Boolean {
-            return super.onDown(e)
-        }
-
-        override fun onFling(
-            e1: MotionEvent?,
-            e2: MotionEvent?,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-            return super.onFling(e1, e2, velocityX, velocityY)
-        }
-
-        override fun onDoubleTap(e: MotionEvent?): Boolean {
-
-            return super.onDoubleTap(e)
-        }
-
-        override fun onScroll(
-            e1: MotionEvent?,
-            e2: MotionEvent?,
-            distanceX: Float,
-            distanceY: Float
-        ): Boolean {
-            return super.onScroll(e1, e2, distanceX, distanceY)
-        }
-
-        override fun onContextClick(e: MotionEvent?): Boolean {
-            return super.onContextClick(e)
-        }
-
-        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-            return super.onSingleTapConfirmed(e)
-        }
-
-        override fun onShowPress(e: MotionEvent?) {
-            super.onShowPress(e)
-        }
-
-        override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
-            return super.onDoubleTapEvent(e)
-        }
-
-        override fun onLongPress(e: MotionEvent?) {
-            super.onLongPress(e)
-        }
-    }
 }
-
-
-
 
 
 //      ***************************************************************************************
@@ -449,4 +377,5 @@ class MainActivity : AppCompatActivity() {
 // Тут надо лезть думать насчет isAfterEqual sho? NET, tak nigde ne sdelano, OTMENA. Navernoe sdelat  obichnuyu proverku isAfterEqual. Vozmozhno eto bilo sdelano, no ya polomal ---DONE
 //---NOT DONE тут можно все же сделать при начальном положении поставить "-" в tvmain и вписать его в str, но в целом можно и не делать
 //---DONE не пишется число 0,0003. Точнее пишется, но нули не отображаются до тех пор, пока не нажмешь на цифру отличную от 0. forTVMAin  и decimalHelper. разбирться надо в них ---DONE
+//---DONE posmotret kak eto sdelano v drugih proektah (gestureDetector onDoubleTap ---DONE
 
