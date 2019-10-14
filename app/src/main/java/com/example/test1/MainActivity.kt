@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.icu.text.AlphabeticIndex
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,46 +20,36 @@ import java.util.*
 import android.util.TypedValue
 import androidx.core.view.GestureDetectorCompat
 
+private val MATHERROR = "Error"
+private val DECIMALFORMAT = "#,###.#####"
+
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mDetector: GestureDetectorCompat
-
+    var calculator = Calculator(false, false, false, true,
+        true, false, 0.0, 0.0,
+        false, "", true, false, "")
     // можно сделать immutable и вообще тут нет конструктора
-    private val MATHERROR = "Error"
-    private val DECIMALFORMAT = "#,###.#####"
 
-    private var isLastOfAllNumeric = false
-    private var isLastOperator = false
-    private var isDPhere = false
-    private var isFirstNumber = true
-    private var tryError = true
-    private var isAfterEqual = false
-    private var firstNumber: Double = 0.0
-    private var secondNumber: Double = 0.0
-    private var isPercentage = false
-    private var newOpr = ""
-    private var isNumberEmpty = true
-    private var isFullClear = false
-    private var strForTVMain: String = ""
+//    private var isLastOfAllNumeric = false
+//    private var isLastOperator = false
+//    private var isDPhere = false
+//    private var isFirstNumber = true
+//    private var tryError = true
+//    private var isAfterEqual = false
+//    private var firstNumber: Double = 0.0
+//    private var secondNumber: Double = 0.0
+//    private var isPercentage = false
+//    private var newOpr = ""
+//    private var isNumberEmpty = true
+//    private var isFullClear = false
+//    private var strForTVMain: String = ""
 
-
-    // Ne ponyatno zachem nujen stSecondNumber
-    // private var stSecondNumber: String = ""
-
-    //dopisat
-    class CalculatorInit constructor(isLastOfAllNumeric: Boolean, isLastOperator: Boolean, isDPhere: Boolean, isFirstNumber: Boolean,
-                          tryError: Boolean, isAfterEqual: Boolean, firstNumber: Double, secondNumber: Double, isPercentage: Boolean,
-                          newOpr: String, isNumberEmpty: Boolean, isFullClear: Boolean, strForTVMain: String, stSecondNumber: String) {
-
-        init {
-
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         tvMain.text = "0"
+
 
         val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onDoubleTap(e: MotionEvent?): Boolean {
@@ -81,12 +72,12 @@ class MainActivity : AppCompatActivity() {
 
     fun onNumber(view: View) {
         buttonAC.text = "C"
-        if (isAfterEqual) {
+        if (calculator.isAfterEqual) {
             Log.d("ONNUMBER", "isAfterEqual")
-            strForTVMain = ""
-            isAfterEqual = false
+            calculator.strForTVMain = ""
+            calculator.isAfterEqual = false
         }
-        if (!isLastOfAllNumeric) {
+        if (!calculator.isLastOfAllNumeric) {
             Log.d("ONNUMBER", "isLastOfAllNumeric")
             tvMain.text = ""
         }
@@ -95,30 +86,30 @@ class MainActivity : AppCompatActivity() {
             Log.d("ONNUMBER", "checkForLastOperator")
             tvMain.text = ""
         }
-        isLastOperator = false
-        isFullClear = false
+        calculator.isLastOperator = false
+        calculator.isFullClear = false
         forTvMain(view)
-        isLastOfAllNumeric = true
+        calculator.isLastOfAllNumeric = true
     }
 
 
     private fun forTvMain(view: View) {
-        isNumberEmpty = false
+        calculator.isNumberEmpty = false
         val button = view as Button
-        Log.d("HEEEEELP", "strForTVMain: $strForTVMain")
-        if (strForTVMain.length < 9) {
-            strForTVMain += button.text.toString()
-            Log.d("HEEEEELP", "strForTVMain: $strForTVMain")
-            if (strForTVMain.contains(".")) {
-                val helper = strForTVMain.replace(".", ",")
+        Log.d("HEEEEELP", "strForTVMain: $calculator.strForTVMain")
+        if (calculator.strForTVMain.length < 9) {
+            calculator.strForTVMain += button.text.toString()
+            Log.d("HEEEEELP", "strForTVMain: $calculator.strForTVMain")
+            if (calculator.strForTVMain.contains(".")) {
+                val helper = calculator.strForTVMain.replace(".", ",")
                 Log.d("FORTVMAIN", "helper:$helper")
                 tvMain.text = helper
                 return
             }
-            val beautyStr = strForTVMain.toDouble()
+            val beautyStr = calculator.strForTVMain.toDouble()
             Log.d("STM", "strForTVMain.toDouble: $beautyStr")
             tvMain.text = decimalHelper(beautyStr, DECIMALFORMAT)
-            Log.d("STM", "strForTVMain: $strForTVMain")
+            Log.d("STM", "strForTVMain: $calculator.strForTVMain")
         } else return
     }
 
@@ -132,11 +123,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkForLastOperator() = when {
-        isLastOperator -> {
+        calculator.isLastOperator -> {
             Log.d("stm", "isNotEmpty is done")
-            tryError = false
+            calculator.tryError = false
             saveNumber()
-            Log.d("stm", "FN: $firstNumber or SN:$secondNumber")
+            Log.d("stm", "FN: $calculator.firstNumber or SN:$calculator.secondNumber")
             true
         }
         else -> false
@@ -145,132 +136,132 @@ class MainActivity : AppCompatActivity() {
     fun onDecimal(view: View) {
         Log.d(
             "onDecimal",
-            "isNumberEmpty :$isNumberEmpty and strFor: $strForTVMain, isLastOfAllNumeric: $isLastOfAllNumeric, isDPhere: $isDPhere"
+            "isNumberEmpty :$calculator.isNumberEmpty and strFor: $calculator.strForTVMain, isLastOfAllNumeric: $calculator.isLastOfAllNumeric, isDPhere: $calculator.isDPhere"
         )
-        if (isAfterEqual) {
+        if (calculator.isAfterEqual) {
             onClear(view)
         }
-        if (isNumberEmpty) {
+        if (calculator.isNumberEmpty) {
             tvMain.append((view as Button).text)
-            strForTVMain = "0."
-            isDPhere = true
-            isNumberEmpty = false
+            calculator.strForTVMain = "0."
+            calculator.isDPhere = true
+            calculator.isNumberEmpty = false
         }
         // pri 0 + 0,75 = 0,75 = 75
         if (checkForLastOperator()) {
-            Log.d("onDecimal", "checkForLastOperator, isNumberEmpty: $isNumberEmpty")
+            Log.d("onDecimal", "checkForLastOperator, isNumberEmpty: $calculator.isNumberEmpty")
             tvMain.text = "0,"
-            strForTVMain = "0."
-            isLastOperator = false
+            calculator.strForTVMain = "0."
+            calculator.isLastOperator = false
             // postavil isFirstNumber = false i teper posle onCleat eta tema ne rabotaet ??? 10.10.19 - hz o chem eto bilo, vrode pofiksil
-            isFirstNumber = false
+            calculator.isFirstNumber = false
             return
         }
         // isLastOfAllNumeric нужен, иначе крашится при ", ="
-        if (isLastOfAllNumeric && !isDPhere) {
+        if (calculator.isLastOfAllNumeric && !calculator.isDPhere) {
             tvMain.append((view as Button).text)
-            strForTVMain += "."
-            Log.d("HEEEEELP", "strForTVMain: $strForTVMain")
-            isDPhere = true
+            calculator.strForTVMain += "."
+            Log.d("HEEEEELP", "strForTVMain: $calculator.strForTVMain")
+            calculator.isDPhere = true
         } else return
     }
 
     fun onPercentage(view: View) {
-        isPercentage = true
-        if (isFirstNumber) {
-            isFirstNumber = false
-            secondNumber = 0.01
-            newOpr = "*"
+        calculator.isPercentage = true
+        if (calculator.isFirstNumber) {
+            calculator.isFirstNumber = false
+            calculator.secondNumber = 0.01
+            calculator.newOpr = "*"
             onEqual(view)
         } else {
-            if (newOpr.equals("+") || newOpr.equals("-")) {
-                secondNumber = firstNumber * strForTVMain.toDouble() * 0.01
-                Log.d("STM", "onPercentage, else +++ -> SN: $secondNumber")
+            if (calculator.newOpr.equals("+") || calculator.newOpr.equals("-")) {
+                calculator.secondNumber = calculator.firstNumber * calculator.strForTVMain.toDouble() * 0.01
+                Log.d("STM", "onPercentage, else +++ -> SN: $calculator.secondNumber")
             } else {
-                secondNumber = strForTVMain.toDouble() * 0.01
-                Log.d("STM", "onPercentage, else *** -> SN: $secondNumber")
+                calculator.secondNumber = calculator.strForTVMain.toDouble() * 0.01
+                Log.d("STM", "onPercentage, else *** -> SN: $calculator.secondNumber")
             }
-            tvMain.text = decimalHelper(secondNumber, DECIMALFORMAT)
+            tvMain.text = decimalHelper(calculator.secondNumber, DECIMALFORMAT)
         }
     }
 
 
     fun onPlusMinus(view: View) {
-        if (strForTVMain.isEmpty()) {
+        if (calculator.strForTVMain.isEmpty()) {
             return
         }
-        strForTVMain = if (strForTVMain.contains(".")) {
-            (strForTVMain.toDouble() * -1).toString()
+        calculator.strForTVMain = if (calculator.strForTVMain.contains(".")) {
+            (calculator.strForTVMain.toDouble() * -1).toString()
         } else {
-            (strForTVMain.toInt() * -1).toString()
+            (calculator.strForTVMain.toInt() * -1).toString()
         }
-        Log.d("ONPLUSMINUS", "strForTVMAIN: $strForTVMain")
-        tvMain.text = decimalHelper(strForTVMain.toDouble(), DECIMALFORMAT)
+        Log.d("ONPLUSMINUS", "strForTVMAIN: $calculator.strForTVMain")
+        tvMain.text = decimalHelper(calculator.strForTVMain.toDouble(), DECIMALFORMAT)
     }
 
 
     fun onClear(view: View) {
-        secondNumber = 0.0
+        calculator.secondNumber = 0.0
         tvMain.text = "0"
-        isDPhere = false
-        strForTVMain = ""
+        calculator.isDPhere = false
+        calculator.strForTVMain = ""
         buttonAC.text = getString(R.string.ac)
-        isNumberEmpty = true
-        isPercentage = false
-        Log.d("onClear", "isFullClear: $isFullClear")
+        calculator.isNumberEmpty = true
+        calculator.isPercentage = false
+        Log.d("onClear", "isFullClear: $calculator.isFullClear")
         Log.d("steelwsky", "***********SN IS CLEARED***********")
-        if (isFirstNumber || isFullClear) {
-            isFirstNumber = true
-            firstNumber = 0.0
-            isLastOfAllNumeric = false
-            isLastOperator = false
-            newOpr = ""
-            tryError = true
-            isAfterEqual = false
+        if (calculator.isFirstNumber || calculator.isFullClear) {
+            calculator.isFirstNumber = true
+            calculator.firstNumber = 0.0
+            calculator.isLastOfAllNumeric = false
+            calculator.isLastOperator = false
+            calculator.newOpr = ""
+            calculator.tryError = true
+            calculator.isAfterEqual = false
             tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60f)
             Log.d("steelwsky", "**********************CLEARED**********************")
         }
-        isFullClear = true
+        calculator.isFullClear = true
     }
 
 
     fun onEqual(view: View) {
         Log.d("STM", "onEqual INIT")
-        if (isFullClear && isNumberEmpty) {
-            strForTVMain = firstNumber.toString()
-            Log.d("STM", "onEqual, isFullClear = true, strTVMain: $strForTVMain")
+        if (calculator.isFullClear && calculator.isNumberEmpty) {
+            calculator.strForTVMain = calculator.firstNumber.toString()
+            Log.d("STM", "onEqual, isFullClear = true, strTVMain: $calculator.strForTVMain")
         }
-        if (!isFirstNumber && !isPercentage) {
-            secondNumber = strForTVMain.toDouble()
+        if (!calculator.isFirstNumber && !calculator.isPercentage) {
+            calculator.secondNumber = calculator.strForTVMain.toDouble()
             Log.d("STM", "onEqual !isFirstNumber")
         }
-        if (strForTVMain.equals("")) {
+        if (calculator.strForTVMain.equals("")) {
             onClear(view)
             Log.d("STM", "strTVMain = null, onEqual EXIT")
             return
         }
 
-        if (!tryError) {
+        if (!calculator.tryError) {
             Log.d(
                 "STM",
-                "BEFORE MATHFUN newOpr: $newOpr  firstNumber: $firstNumber  secondNumber: $secondNumber"
+                "BEFORE MATHFUN newOpr: $calculator.newOpr  firstNumber: $calculator.firstNumber  secondNumber: $calculator.secondNumber"
             )
-            tvMain.text = math(newOpr, firstNumber, secondNumber)
-            newOpr = ""
-            isLastOfAllNumeric = false
-            isFirstNumber = true
-            isAfterEqual = true
-            isDPhere = false
-            isPercentage = false
+            tvMain.text = math(calculator.newOpr, calculator.firstNumber, calculator.secondNumber)
+            calculator.newOpr = ""
+            calculator.isLastOfAllNumeric = false
+            calculator.isFirstNumber = true
+            calculator.isAfterEqual = true
+            calculator.isDPhere = false
+            calculator.isPercentage = false
             Log.d("STM", "onEqual EXIT")
-            tryError = true
-            isFullClear = false
+            calculator.tryError = true
+            calculator.isFullClear = false
             return
         } else {
-            tryError = false
-            firstNumber = strForTVMain.toDouble()
-            isFirstNumber = false
-            isLastOperator = false
+            calculator.tryError = false
+            calculator.firstNumber = calculator.strForTVMain.toDouble()
+            calculator.isFirstNumber = false
+            calculator.isLastOperator = false
             Log.d("STM", "tryError is now FALSE")
             onEqual(view)
             return
@@ -278,60 +269,60 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun math(operation: String, first: Double, second: Double): String {
-        Log.d("steelwsky", "mathINIT, newOpr is: $newOpr")
+        Log.d("steelwsky", "mathINIT, newOpr is: $calculator.newOpr")
         when (operation) {
             "+" -> {
-                firstNumber = (first + second)
-                Log.d("steelwsky", "WeAreInside  $first + $second = $firstNumber")
+                calculator.firstNumber = (first + second)
+                Log.d("steelwsky", "WeAreInside  $first + $second = $calculator.firstNumber")
             }
             "-" -> {
-                firstNumber = (first - second)
-                Log.d("steelwsky", "WeAreInside  $first - $second = $firstNumber")
+                calculator.firstNumber = (first - second)
+                Log.d("steelwsky", "WeAreInside  $first - $second = $calculator.firstNumber")
             }
             "*" -> {
-                firstNumber = (first * second)
-                Log.d("steelwsky", "WeAreInside  $first * $second = $firstNumber")
+                calculator.firstNumber = (first * second)
+                Log.d("steelwsky", "WeAreInside  $first * $second = $calculator.firstNumber")
             }
             "/" -> {
                 if (second != 0.0) {
-                    firstNumber = (first / second)
-                    Log.d("steelwsky", "WeAreInside  $first / $second = $firstNumber")
+                    calculator.firstNumber = (first / second)
+                    Log.d("steelwsky", "WeAreInside  $first / $second = $calculator.firstNumber")
                 } else
                     return MATHERROR
             }
         }
-        isFirstNumber = false
-        strForTVMain = firstNumber.toString()
-        Log.d("steelwsky", "mathEND   $firstNumber")
-        val forDecimalHelper = decimalHelper(firstNumber, DECIMALFORMAT)
+        calculator.isFirstNumber = false
+        calculator.strForTVMain = calculator.firstNumber.toString()
+        Log.d("steelwsky", "mathEND   $calculator.firstNumber")
+        val forDecimalHelper = decimalHelper(calculator.firstNumber, DECIMALFORMAT)
         Log.d("STM", "forDecimalHelper:$forDecimalHelper, ${forDecimalHelper.length}")
         return forDecimalHelper
     }
 
     fun onOperator(view: View) {
-        isDPhere = false
-        isLastOperator = true
-        if (!isFirstNumber) {
+        calculator.isDPhere = false
+        calculator.isLastOperator = true
+        if (!calculator.isFirstNumber) {
             onEqual(view)
         }
         when (view) {
-            fabPlus -> newOpr = "+"
-            fabMinus -> newOpr = "-"
-            fabMulti -> newOpr = "*"
-            fabDivide -> newOpr = "/"
+            fabPlus -> calculator.newOpr = "+"
+            fabMinus -> calculator.newOpr = "-"
+            fabMulti -> calculator.newOpr = "*"
+            fabDivide -> calculator.newOpr = "/"
         }
-        isAfterEqual = false
-        Log.d("steelwsky", "HERE IS MY OPERATOR: $newOpr")
+        calculator.isAfterEqual = false
+        Log.d("steelwsky", "HERE IS MY OPERATOR: $calculator.newOpr")
     }
 
     private fun saveNumber() {
-        Log.d(" BEFORE SAVENUMBER", "strMain: $strForTVMain and FN:$firstNumber, SN:$secondNumber")
-        if (isFirstNumber) {
-            if (strForTVMain.equals("")) strForTVMain = "0"
-            firstNumber = strForTVMain.toDouble()
-            Log.d("SAVENUMBER", "FN: $firstNumber")
-            strForTVMain = ""
-            isFirstNumber = false
+        Log.d(" BEFORE SAVENUMBER", "strMain: $calculator.strForTVMain and FN:$calculator.firstNumber, SN:$calculator.secondNumber")
+        if (calculator.isFirstNumber) {
+            if (calculator.strForTVMain.equals("")) calculator.strForTVMain = "0"
+            calculator.firstNumber = calculator.strForTVMain.toDouble()
+            Log.d("SAVENUMBER", "FN: $calculator.firstNumber")
+            calculator.strForTVMain = ""
+            calculator.isFirstNumber = false
         }
     }
 
@@ -342,11 +333,12 @@ class MainActivity : AppCompatActivity() {
         val clip: ClipData = ClipData.newPlainText("number", tvMain.text)
         clipboard.primaryClip = clip
 
-        Log.d("Clipboard", "we saved str: $strForTVMain")
+        Log.d("Clipboard", "we saved str: $calculator.strForTVMain")
 
     }
 
 }
+
 
 
 //      ***************************************************************************************
