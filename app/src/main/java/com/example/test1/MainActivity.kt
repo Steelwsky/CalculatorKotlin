@@ -17,9 +17,11 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
 import android.util.TypedValue
-
+import androidx.core.view.GestureDetectorCompat
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var mDetector: GestureDetectorCompat
 
     // можно сделать immutable и вообще тут нет конструктора
     private val MATHERROR = "Error"
@@ -38,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private var isNumberEmpty = true
     private var isFullClear = false
     private var strForTVMain: String = ""
+
+
     // Ne ponyatno zachem nujen stSecondNumber
 //    private var stSecondNumber: String = ""
 
@@ -55,26 +59,37 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        mDetector = GestureDetectorCompat(this, MyGestureDetector())
+
+        var touchListener = View.OnTouchListener { _, event ->
+            mDetector.onTouchEvent(event)
+        }
+        tvMain.setOnTouchListener(touchListener)
         tvMain.text = "0"
+
     }
 
     fun letMe(view: View) {
+        view.setOnTouchListener()
         view.setOnLongClickListener {
-            saveNumberToBuffer(view)
+            saveNumberToBuffer()
             Toast.makeText(this, "Copied", Toast.LENGTH_SHORT).show()
             true
         }
+    }
 
-        //TODO posmotret kak eto sdelano v drugih proektah
+    //TODO posmotret kak eto sdelano v drugih proektah
 //        val gestureDetector =
 //            GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
 //                override fun onDoubleTap(e: MotionEvent?): Boolean {
+//                    saveNumberToBuffer(view)
+//                    Toast.makeText(this@MainActivity, "Copied", Toast.LENGTH_SHORT).show()
 //                    Log.d("myApp", "double tap")
 //                    return true
 //                }
 //            })
 //        view.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
-    }
+//    }
 
     fun onNumber(view: View) {
         buttonAC.text = "C"
@@ -97,14 +112,6 @@ class MainActivity : AppCompatActivity() {
         forTvMain(view)
         isLastOfAllNumeric = true
     }
-
-//    private fun hueChange(c: Int, deg: Int): Int {
-//        val hsv = FloatArray(3)       //array to store HSV values
-//        Color.colorToHSV(c, hsv) //get original HSV values of pixel
-//        hsv[0] = hsv[0] + deg                //add the shift to the HUE of HSV array
-//        hsv[0] = hsv[0] % 360                //confines hue to values:[0,360]
-//        return Color.HSVToColor(Color.alpha(c), hsv)
-//    }
 
 
     private fun forTvMain(view: View) {
@@ -347,7 +354,7 @@ class MainActivity : AppCompatActivity() {
 //        }
 
     @SuppressLint("ServiceCast")
-    fun saveNumberToBuffer(view: View) {
+    open fun saveNumberToBuffer() {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip: ClipData = ClipData.newPlainText("number", tvMain.text)
         clipboard.primaryClip = clip
@@ -356,18 +363,63 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    class MyGestureDetector : GestureDetector.SimpleOnGestureListener() {
+        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            return super.onSingleTapUp(e)
+        }
+
+        override fun onDown(e: MotionEvent?): Boolean {
+            return super.onDown(e)
+        }
+
+        override fun onFling(
+            e1: MotionEvent?,
+            e2: MotionEvent?,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            return super.onFling(e1, e2, velocityX, velocityY)
+        }
+
+        override fun onDoubleTap(e: MotionEvent?): Boolean {
+
+            return super.onDoubleTap(e)
+        }
+
+        override fun onScroll(
+            e1: MotionEvent?,
+            e2: MotionEvent?,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            return super.onScroll(e1, e2, distanceX, distanceY)
+        }
+
+        override fun onContextClick(e: MotionEvent?): Boolean {
+            return super.onContextClick(e)
+        }
+
+        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            return super.onSingleTapConfirmed(e)
+        }
+
+        override fun onShowPress(e: MotionEvent?) {
+            super.onShowPress(e)
+        }
+
+        override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
+            return super.onDoubleTapEvent(e)
+        }
+
+        override fun onLongPress(e: MotionEvent?) {
+            super.onLongPress(e)
+        }
+    }
 }
 
-//        if(strForTVMain.contains(".")) {
-//            val afterDot: String = strForTVMain.substringAfter(".")
-//            if (afterDot.length > 5) {
-//                tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60f)
-//            }
-//        } else {
-//            if (strForTVMain.length > 9) {
-//                tvMain.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
-//            }
-//        }
+
+
+
 
 //      ***************************************************************************************
 //--- DONE MUSTHAVE  в tvMain отправлять только готовый string... tvMain и FN/SN - разные вещи!
