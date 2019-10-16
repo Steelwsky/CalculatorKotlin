@@ -4,9 +4,21 @@ package com.example.test1
 //                                 val tryError: Boolean = true, val isAfterEqual: Boolean = false, val firstNumber: Double = 0.0, val secondNumber: Double = 0.0, val isPercentage: Boolean = false,
 //                                 val newOpr: String = "", val isNumberEmpty: Boolean = true, val isFullClear: Boolean = false, val strForTVMain: String = "") {
 
-    class Calculator (isLastOfAllNumeric: Boolean, isLastOperator: Boolean, isDPhere: Boolean, isFirstNumber: Boolean,
-                      tryError: Boolean, isAfterEqual: Boolean, firstNumber: Double, secondNumber: Double, isPercentage: Boolean,
-                      newOpr: String, isNumberEmpty: Boolean, isFullClear: Boolean, strForTVMain: String) {
+class Calculator(
+    isLastOfAllNumeric: Boolean,
+    isLastOperator: Boolean,
+    isDPhere: Boolean,
+    isFirstNumber: Boolean,
+    tryError: Boolean,
+    isAfterEqual: Boolean,
+    firstNumber: Double,
+    secondNumber: Double,
+    isPercentage: Boolean,
+    newOpr: String,
+    isNumberEmpty: Boolean,
+    isFullClear: Boolean,
+    strForTVMain: String
+) {
 
     var isLastOfAllNumeric = false
     var isLastOperator = false

@@ -18,12 +18,13 @@ import java.text.DecimalFormatSymbols
 import java.util.*
 import android.util.TypedValue
 
-private val MATHERROR = "Error"
-private val DECIMALFORMAT = "#,###.#####"
+private const val MATHERROR = "Error"
+//private const val DECIMALFORMAT = "#,###.#####"
 
 class MainActivity : AppCompatActivity() {
 
-    var calculator = Calculator(false, false, false, true,
+    private var calculator = Calculator(
+        false, false, false, true,
         true, false, 0.0, 0.0,
         false, "", true, false, "")
 
@@ -111,17 +112,18 @@ class MainActivity : AppCompatActivity() {
             }
             val beautyStr = calculator.strForTVMain.toDouble()
             Log.d("STM", "strForTVMain.toDouble: $beautyStr")
-            tvMain.text = decimalHelper(beautyStr, DECIMALFORMAT)
+            tvMain.text = decimalHelper(beautyStr)
             Log.d("STM", "strForTVMain: $calculator.strForTVMain")
         } else return
     }
 
 
-    private fun decimalHelper(number: Double, formatString: String): String {
+    private fun decimalHelper(number: Double): String {
+        val dFormat = "#,###.#####"
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
         formatSymbols.decimalSeparator = ','
         formatSymbols.groupingSeparator = ' '
-        val formatter = DecimalFormat(formatString, formatSymbols)
+        val formatter = DecimalFormat(dFormat, formatSymbols)
         return formatter.format(number)
     }
 
@@ -184,7 +186,7 @@ class MainActivity : AppCompatActivity() {
                 calculator.secondNumber = calculator.strForTVMain.toDouble() * 0.01
                 Log.d("STM", "onPercentage, else *** -> SN: $calculator.secondNumber")
             }
-            tvMain.text = decimalHelper(calculator.secondNumber, DECIMALFORMAT)
+            tvMain.text = decimalHelper(calculator.secondNumber)
         }
     }
 
@@ -199,7 +201,7 @@ class MainActivity : AppCompatActivity() {
             (calculator.strForTVMain.toInt() * -1).toString()
         }
         Log.d("ONPLUSMINUS", "strForTVMAIN: $calculator.strForTVMain")
-        tvMain.text = decimalHelper(calculator.strForTVMain.toDouble(), DECIMALFORMAT)
+        tvMain.text = decimalHelper(calculator.strForTVMain.toDouble())
     }
 
 
@@ -297,7 +299,7 @@ class MainActivity : AppCompatActivity() {
         calculator.isFirstNumber = false
         calculator.strForTVMain = calculator.firstNumber.toString()
         Log.d("steelwsky", "mathEND   $calculator.firstNumber")
-        val forDecimalHelper = decimalHelper(calculator.firstNumber, DECIMALFORMAT)
+        val forDecimalHelper = decimalHelper(calculator.firstNumber)
         Log.d("STM", "forDecimalHelper:$forDecimalHelper, ${forDecimalHelper.length}")
         return forDecimalHelper
     }
@@ -331,7 +333,7 @@ class MainActivity : AppCompatActivity() {
 
 
     @SuppressLint("ServiceCast")
-    open fun saveNumberToBuffer() {
+    fun saveNumberToBuffer() {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip: ClipData = ClipData.newPlainText("number", tvMain.text)
         clipboard.primaryClip = clip
