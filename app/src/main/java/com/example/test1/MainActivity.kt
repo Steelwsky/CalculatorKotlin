@@ -117,7 +117,6 @@ class MainActivity : AppCompatActivity() {
         } else return
     }
 
-
     private fun decimalHelper(number: Double): String {
         val dFormat = "#,###.#####"
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
