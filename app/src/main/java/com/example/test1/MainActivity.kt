@@ -19,34 +19,18 @@ import java.util.*
 import android.util.TypedValue
 
 private const val MATHERROR = "Error"
-//private const val DECIMALFORMAT = "#,###.#####"
+
 
 class MainActivity : AppCompatActivity() {
 
-    private var calculator = Calculator(
-        false, false, false, true,
-        true, false, 0.0, 0.0,
-        false, "", true, false, "")
+//    private var calculator = Calculator(
+//        false, false, false, true,
+//        true, false, 0.0, 0.0,
+//        false, "", true, false, "")
 
-//    val calculatorVal = Calculator()
-
+    private val calculator = Calculator()
 
     // можно сделать immutable и вообще тут нет конструктора
-
-//    private var isLastOfAllNumeric = false
-//    private var isLastOperator = false
-//    private var isDPhere = false
-//    private var isFirstNumber = true
-//    private var tryError = true
-//    private var isAfterEqual = false
-//    private var firstNumber: Double = 0.0
-//    private var secondNumber: Double = 0.0
-//    private var isPercentage = false
-//    private var newOpr = ""
-//    private var isNumberEmpty = true
-//    private var isFullClear = false
-//    private var strForTVMain: String = ""
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
