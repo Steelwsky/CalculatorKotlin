@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.icu.text.AlphabeticIndex
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +17,6 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
 import android.util.TypedValue
-import androidx.core.view.GestureDetectorCompat
 
 private val MATHERROR = "Error"
 private val DECIMALFORMAT = "#,###.#####"
@@ -28,6 +26,10 @@ class MainActivity : AppCompatActivity() {
     var calculator = Calculator(false, false, false, true,
         true, false, 0.0, 0.0,
         false, "", true, false, "")
+
+//    val calculatorVal = Calculator()
+
+
     // можно сделать immutable и вообще тут нет конструктора
 
 //    private var isLastOfAllNumeric = false
@@ -60,6 +62,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         tvMain.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event) }
+
         tvMain.setOnLongClickListener {
             saveNumberToBuffer()
             Toast.makeText(this@MainActivity, "Copied", Toast.LENGTH_SHORT).show()
