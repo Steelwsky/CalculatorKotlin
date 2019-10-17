@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("ONNUMBER", "isLastOfAllNumeric")
             tvMain.text = ""
         }
-//        }
+
         if (checkForLastOperator()) {
             Log.d("ONNUMBER", "checkForLastOperator")
             tvMain.text = ""
